@@ -3,25 +3,13 @@
     <div>
       <Logo />
       <h1 class="title">
-        nomadui
+        Welcome to nomadui
       </h1>
       <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+        Check out
+        <nuxt-link to="/users/sasha">
+          My Profile
+        </nuxt-link>
       </div>
     </div>
   </div>
