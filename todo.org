@@ -1,0 +1,4 @@
+** TODO [0/1]
+   - [ ] Create UI for authentication : /auth/login, /auth/register, /auth/logout 
+
+following  this tutorial: https://medium.com/@eduardo.silva./building-a-simple-application-using-nuxtjs-and-django-part-i-6027ddefc385
