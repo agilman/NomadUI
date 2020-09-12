@@ -56,17 +56,56 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/auth'
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {},
+  axios: {
+    baseURL: 'http://127.0.0.1:8000/',
+  },
+  /* 
+  ** Auth module configuration
+  ** See https://auth.nuxtjs.org
+  */
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: 'token/login/',
+            method: 'post',
+            propertyName: 'auth_token',
+          },
+          logout: { url: 'token/logout/', method: 'post' },
+          user: {
+            url: 'accounts/data/',
+            method: 'get',
+            propertyName: false,
+          },
+        },
+        tokenType: 'Token',
+        tokenName: 'Authorization',
+      },
+      redirect: {
+        login: '/login',
+        home: '/',
+      },
+    },
+  },
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
+  },
+  /*
+  ** Router configured to use the auth module globally
+  ** See https://auth.nuxtjs.org/guide/middleware.html
+  */
+  router: {
+    middleware: ['auth']
   }
 }

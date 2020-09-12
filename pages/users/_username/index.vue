@@ -9,7 +9,7 @@
 <script>
 export default {
   async asyncData ({ $axios, params }) {
-    const uname = params.userName
+    const uname = params.username
     const userData = await $axios.$get('http://localhost:8000/api/rest/user/' + uname)
     console.log(userData)
   },
