@@ -75,23 +75,16 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: 'token/login/',
+            url: '/api/token/',
             method: 'post',
             propertyName: 'auth_token',
           },
-          logout: { url: 'token/logout/', method: 'post' },
-          user: {
-            url: 'accounts/data/',
-            method: 'get',
-            propertyName: false,
-          },
+          logout: { url: '/auth/logout', method: 'post' },
+          user: false,
         },
-        tokenType: 'Token',
-        tokenName: 'Authorization',
       },
       redirect: {
-        login: '/login',
-        home: '/',
+        login: '/login'
       },
     },
   },

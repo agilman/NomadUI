@@ -16,7 +16,9 @@
 </template>
 
 <script>
-export default {}
+export default {
+  auth: false
+}
 </script>
 
 <style>
