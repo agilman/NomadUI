@@ -11,6 +11,15 @@
           My Profile
         </nuxt-link>
       </div>
+      <br>
+      <div class="links">
+        <nuxt-link to="/login">
+          Login
+        </nuxt-link> |
+        <nuxt-link to="/register">
+          Register
+        </nuxt-link>
+      </div>
     </div>
   </div>
 </template>

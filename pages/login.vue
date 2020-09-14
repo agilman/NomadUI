@@ -1,10 +1,10 @@
 <template>
   <section class="login">
-    <h1
+    <h2
       class="title"
     >
-      Authentication
-    </h1>
+      Login
+    </h2>
     <div class="auth-form">
       <field label="User">
         <input v-model="user.username" type="text">user</input>
