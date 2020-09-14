@@ -14,6 +14,7 @@ export default {
     console.log(userData)
   },
   mounted () {
-  }
+  },
+  auth: false
 }
 </script>

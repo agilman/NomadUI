@@ -66,7 +66,7 @@ export default {
   axios: {
     baseURL: 'http://127.0.0.1:8000/',
   },
-  /* 
+  /*
   ** Auth module configuration
   ** See https://auth.nuxtjs.org
   */
@@ -75,7 +75,7 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: '/api/token/',
+            url: '/auth/token/',
             method: 'post',
             propertyName: 'auth_token',
           },
