@@ -39,13 +39,14 @@ export default {
   methods: {
     async register () {
       try {
+        /* Todo: verify data!!! */
         const exampleData = {
           username: this.user.username,
           email: this.user.email,
-          password1: this.user.password1,
-          password2: this.user.password2
+          password: this.user.password1
         }
-        console.log(exampleData)
+
+        /* Todo: handle response and possible errors... */
         await this.$axios.post('http://127.0.0.1:8000/auth/register/', exampleData)
 
         /*
