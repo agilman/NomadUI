@@ -5,13 +5,12 @@
     >
       Login
     </h2>
-    <div class="auth-form">
-      <field label="User">
-        <input v-model="user.username" type="text">user</input>
-      </field>
-      <field label="Password">
-        <input v-model="user.password" type="password">password</input>
-      </field>
+    <div>
+      <label for="user">nick</label>
+      <input v-model="user.username" type="text">user</input>
+
+      <label for="password">Password</label>
+      <input id="password" v-model="user.password" type="password">password</input>
       <button
         class="is-primary"
         @click="login"
