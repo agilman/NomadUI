@@ -28,6 +28,7 @@ export default {
       user: {}
     }
   },
+  auth: false,
   methods: {
     async login () {
       try {
@@ -35,6 +36,7 @@ export default {
           data: this.user
         })
         console.log('login success')
+        this.$router.push('/')
       } catch (err) {
         console.log('login failed')
       }
