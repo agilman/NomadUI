@@ -5,24 +5,22 @@
     >
       Register
     </h2>
-    <div class="auth-form">
-      <field label="User">
-        <input v-model="user.username" type="text">user</input>
-      </field>
-      <field label="email">
-        <input v-model="user.email" type="text">email</input>
-      </field>
-      <field label="Password">
-        <input v-model="user.password1" type="password">password</input>
-      </field>
-      <field label="Confirm Password">
-        <input v-model="user.password2" type="password">confirm password</input>
-      </field>
+    <div>
+      <label for="username">nick</label>
+      <input id="username" v-model="user.username" type="text">user</input>
+
+      <label for="email">e-mail</label>
+      <input id="email" v-model="user.email" type="text">email</input>
+
+      <label for="password1">Password</label>
+      <input id="password" v-model="user.password1" type="password">password</input>
+      <label for="password2">Confirm Password</label>
+      <input id="password2" v-model="user.password2" type="password">confirm password</input>
       <button
         class="is-primary"
         @click="register"
       >
-        Login
+        Register!
       </button>
     </div>
   </section>
@@ -39,31 +37,31 @@ export default {
   methods: {
     async register () {
       try {
-        /* Todo: verify data!!! */
-        const exampleData = {
+        /* TODO: verify data!!! */
+        const userData = {
           username: this.user.username,
           email: this.user.email,
           password: this.user.password1
         }
 
-        /* Todo: handle response and possible errors... */
-        await this.$axios.post('http://127.0.0.1:8000/auth/register/', exampleData)
+        console.log('about to send registration request')
 
-        /*
-        // This should only fire if the registration is successful
-        */
-        /*
-        await this.$auth.loginWith('local', {
+        const registerResponse = await this.$axios.post('http://127.0.0.1:8000/auth/register/', userData)
+
+        console.log('GOT HERE', registerResponse)
+
+        const loginResponse = await this.$auth.loginWith('local', {
           data: {
-            username: this.username,
-            password: this.password
+            username: userData.username,
+            password: userData.password
           }
         })
-        */
+
+        console.log('SHOULD HAVE RECEIVED A  TOKEN BY NOW!', loginResponse)
 
         this.$router.push('/')
       } catch (e) {
-        console.log(e.response.data.message)
+        console.log(e)
       }
     }
   }
