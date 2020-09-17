@@ -74,17 +74,11 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: {
-            url: '/auth/token/',
-            method: 'post',
-            propertyName: 'auth_token',
-          },
+          login: { url: '/auth/token/', method: 'post', propertyName: 'access'},
           logout: { url: '/auth/logout', method: 'post' },
-          user: false,
+          user: { url:'/api/user',method:'get', propertyName: 'user'},
         },
-      },
-      redirect: {
-        login: '/login'
+        tokenType:''
       },
     },
   },
