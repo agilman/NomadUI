@@ -13,10 +13,10 @@
       </div>
       <br>
       <div class="links">
-        <nuxt-link to="/login">
+        <nuxt-link to="/auth/login">
           Login
         </nuxt-link> |
-        <nuxt-link to="/register">
+        <nuxt-link to="/auth/register">
           Register
         </nuxt-link>
       </div>
