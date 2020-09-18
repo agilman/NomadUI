@@ -23,6 +23,7 @@
 
 <script>
 export default {
+  // TODO : import vuex for auth to work... store token and user info in vuex
   data () {
     return {
       user: {}
@@ -34,6 +35,7 @@ export default {
       try {
         await this.$auth.loginWith('local', {
           data: this.user
+          // todo : this is where I add user data to vuex
         })
         console.log('login success')
         this.$router.push('/')

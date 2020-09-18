@@ -78,7 +78,6 @@ export default {
           logout: { },
           user: false //{ url:'/api/user',method:'get', propertyName: 'user'},
         },
-        tokenType:''
       },
     },
   },
