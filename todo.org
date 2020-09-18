@@ -1,4 +1,9 @@
-** TODO [0/1]
-   - [ ] Create UI for authentication : /auth/login, /auth/register, /auth/logout 
+** TODO [1/1]
+   - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
+   - [ ] Create a navigation bar
+   - [ ] Create a layout for landing page, and for user profile
+   - [ ] Create navigation for major areas
 
-following  this tutorial: https://medium.com/@eduardo.silva./building-a-simple-application-using-nuxtjs-and-django-part-i-6027ddefc385
+
+     
+
