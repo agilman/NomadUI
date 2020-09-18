@@ -15,6 +15,7 @@ export default {
   },
   mounted () {
   },
+  layout: 'viewer',
   auth: false
 }
 </script>
