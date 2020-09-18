@@ -13,19 +13,28 @@
       </div>
       <br>
       <div class="links">
-        <nuxt-link to="/auth/login">
-          Login
-        </nuxt-link> |
-        <nuxt-link to="/auth/register">
-          Register
-        </nuxt-link>
+        <span v-if="loggedIn">
+          You are logged in!
+        </span>
+        <span v-else>
+          <nuxt-link to="/auth/login">
+            Login
+          </nuxt-link> |
+          <nuxt-link to="/auth/register">
+            Register
+          </nuxt-link>
+        </span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
+  computed: {
+    ...mapState('auth', ['loggedIn'])
+  },
   auth: false
 }
 </script>
