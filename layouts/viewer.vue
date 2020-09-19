@@ -39,7 +39,7 @@
       </span>
       <span v-else>
         <div class="flex flex-wrap items-center p-2 items-center">
-          <div class="text-teal-200" >
+          <div class="text-teal-200">
             <nuxt-link to="/auth/login" class="hover:text-white">
               Log In
             </nuxt-link>|
