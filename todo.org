@@ -3,3 +3,6 @@
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
    - [ ] Create navigation for major areas
+   - [ ] Add leaflet to User profile page
+   - [ ] Add call to get adventures from api
+   - [ ] Fix burger navbar
