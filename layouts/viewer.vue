@@ -12,7 +12,7 @@
       <span v-if="loggedIn">
         <div class="flex flex-wrap items-center p-2 items-center">
           <div class="text-teal-200 hover:text-white">
-            <span> Logged in as [user]</span>
+            <span> Logged in as [{{ userName }}]</span>
           </div>
           <button id="nav-toggle" class="flex items-center px-3 py-2 border-2 rounded border-black hover:text-white hover:border-white">
             <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -63,7 +63,13 @@
 import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState('auth', ['loggedIn'])
+    ...mapState('auth', ['loggedIn']),
+    userId () {
+      return this.$store.state.user.user_id
+    },
+    userName () {
+      return this.$store.state.user.username
+    }
   },
   mounted () {
     // console.log('hi')

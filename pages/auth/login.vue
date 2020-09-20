@@ -57,6 +57,9 @@ export default {
             const decodedObj = JSON.parse(decoded)
             console.log(decodedObj)
             // TODO : add to username and decodedObj.user_id to vuex
+
+            this.$store.commit('user/setId', decodedObj.user_id)
+            this.$store.commit('user/setUserName', this.user.username)
           })
         console.log('login success')
         this.$router.push('/')
