@@ -1,8 +1,14 @@
 <template>
   <div>
-    <p>
-      Hello World!
-    </p>
+    <div id="map-wrap">
+      <no-ssr>
+        <l-map :zoom="6" :center="[46.9464418,-121.1277591]" style="height:400px">
+          <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+          <l-marker :lat-lng="[48.73293,-122.50107]" />
+        </l-map>
+      </no-ssr>
+    </div>
+    Hi
   </div>
 </template>
 
