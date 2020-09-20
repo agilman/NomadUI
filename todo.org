@@ -1,9 +1,5 @@
-** TODO [1/1]
+** TODO [3/4]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
-   - [ ] Create a navigation bar
-   - [ ] Create a layout for landing page, and for user profile
+   - [X] Create a navigation bar
+   - [X] Create a layout for landing page, and for user profile
    - [ ] Create navigation for major areas
-
-
-     
-
