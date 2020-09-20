@@ -22,6 +22,10 @@
 </template>
 
 <script>
+function b64ToUtf8 (str) {
+  str = str.replace(/\s/g, '')
+  return decodeURIComponent(escape(window.atob(str)))
+}
 export default {
   // TODO : import vuex for auth to work... store token and user info in vuex
   data () {
@@ -37,6 +41,23 @@ export default {
           data: this.user
           // todo : this is where I add user data to vuex
         })
+          .then((response) => {
+            const token = response.data.access
+            console.log('token:', token)
+            const t0 = token.indexOf('.')
+            // const slice1 = token.slice(0, t0)
+            // console.log('slice1:', slice1)
+            const remainder = token.slice(t0 + 1)
+
+            const t2 = remainder.indexOf('.')
+            const slice2 = remainder.slice(0, t2)
+            // console.log('slice2:', slice2)
+
+            const decoded = b64ToUtf8(slice2)
+            const decodedObj = JSON.parse(decoded)
+            console.log(decodedObj)
+            // TODO : add to username and decodedObj.user_id to vuex
+          })
         console.log('login success')
         this.$router.push('/')
       } catch (err) {
