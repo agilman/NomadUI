@@ -5,16 +5,14 @@
       <h1 class="title">
         Welcome to nomadui
       </h1>
-      <div class="links">
-        Check out
-        <nuxt-link to="/users/sasha">
-          My Profile
-        </nuxt-link>
-      </div>
-      <br>
+
       <div class="links">
         <span v-if="loggedIn">
           You are logged in!
+          <br>
+          <nuxt-link :to="`/users/${userName}`">View Profile</nuxt-link>
+          |
+          <nuxt-link to="/editor">Edit Profile</nuxt-link>
         </span>
         <span v-else>
           <nuxt-link to="/auth/login">
@@ -33,7 +31,10 @@
 import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState('auth', ['loggedIn'])
+    ...mapState('auth', ['loggedIn']),
+    userName () {
+      return this.$store.state.user.username
+    }
   },
   auth: false
 }
