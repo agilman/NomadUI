@@ -1,8 +1,11 @@
-** TODO [3/4]
+** TODO [6/8]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
-   - [ ] Create navigation for major areas
-   - [ ] Add leaflet to User profile page
+   - [X] Fix tailwind warning
+   - [X] Create navigation for major areas
+     - [X] Editor (adventures)
+   - [X] Add leaflet to User profile page
+   - [ ] Add adventure creation interface
    - [ ] Add call to get adventures from api
    - [ ] Fix burger navbar
