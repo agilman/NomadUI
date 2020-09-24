@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div>
     <!-- NAV BAR -->
     <nav class="nav flex flex-wrap items-center justify-between px-4 bg-teal-500">
       <!-- BRANDKING -->
@@ -20,8 +20,9 @@
     </nav>
     <!-- END NAV BAR -->
 
-    <!-- body -->
+    <!-- NUXT -->
     <nuxt />
+    <!-- END NUXT -->
   </div>
 </template>
 
