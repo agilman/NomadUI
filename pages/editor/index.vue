@@ -1,24 +1,24 @@
 <template>
   <div>
-    <div class="flex flex-wrap justify-between">
+    <div class="flex justify-center p-6 ml-6 mr-6">
       <div class="flex">
         <div>
           <h1>Adventures:</h1>
-          <div id="advList" class="flex-wrap">
-            <div id="advItem1" class="border rounded ml-3 mt-1 mb-1 py-2 px-2 justify-between">
-              <span class="w-full">
+          <div id="advList" class="flex-col">
+            <div id="advItem1" class="border rounded mt-1 mb-1 py-2 px-2 justify-between">
+              <span>
                 PDX -> SF -> Yosemite
               </span>
               <span>
-                <button class="border rounded py-2 px-2 hover:font-bold">delete</button>
+                <button class="border rounded py-2 px-2 hover:shadow-outline">delete</button>
               </span>
             </div>
-            <div id="advItem1" class="border rounded ml-3 mb-1 py-2 px-2 justify-between">
-              <span class="w-full">
+            <div id="advItem1" class="border rounded mb-1 py-2 px-2 justify-between">
+              <span>
                 PDX -> Mexico
               </span>
               <span>
-                <button class="border rounded py-2 px-2 hover:font-bold">delete</button>
+                <button class="border rounded py-2 px-2 hover:shadow-outline">delete</button>
               </span>
             </div>
           </div>
@@ -28,8 +28,8 @@
             <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="New Adventure Name">
             <br>
             <div class="flex">
-              <div class="inline-block relative w-64">
-                <select class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+              <div class="inline-block relative w-full">
+                <select class="block mt-1 mb-1 appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
                   <option>Bicycle Touring</option>
                   <option>Backpacking</option>
                   <option>Car Trip</option>
@@ -39,7 +39,7 @@
                 </div>
               </div>
             </div>
-            <div class="inline-block relative w-64">
+            <div class="inline-block relative w-full">
               <select class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
                 <option>In Planning</option>
                 <option>In Progress</option>
@@ -49,15 +49,23 @@
                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
               </div>
             </div>
-            <button class="flex w-full border rounded m-1 px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow">
+            <button class="flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline">
               Create!
             </button>
           </div>
         </div>
       </div> <!-- Left -->
-      <div class="flex">
-        Profile photo:
-      </div> <!-- Right -->
+      <div class="flex ml-10">
+        <div class="flex-col px-2">
+          <div>
+            <h1>Profile photo:</h1>
+            <img src="~/static/Portrait_Placeholder.png" style="height:150pt"></img>
+          </div>
+          <div>
+            <button class="flex mt-1 px-2 py-2 w-full border rounded bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline">Upload Photo</button>
+          </div>
+        </div> <!-- Right -->
+      </div>
     </div>
   </div>
 </template>
