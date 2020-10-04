@@ -13,26 +13,34 @@
                 <button class="border rounded py-2 px-2 hover:shadow-outline">delete</button>
               </span>
             </div>
-            <div id="advItem1" class="border rounded mb-1 py-2 px-2 justify-between">
-              <span>
+            <div id="advItem1" class="flex-row border rounded mb-1 py-2 px-2 justify-between">
+              <div class="flex jutoify-center">
                 PDX -> Mexico
-              </span>
-              <span>
-                <button class="border rounded py-2 px-2 hover:shadow-outline">delete</button>
-              </span>
+              </div>
+              <div class="flex">
+                <button class="border rounded py-2 px-2 hover:shadow-outline">
+                  delete
+                </button>
+              </div>
             </div>
           </div>
           <br>
           <div>
             <h1>New Adventure:</h1>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="New Adventure Name">
+            <input v-model="advName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="New Adventure Name">
             <br>
             <div class="flex">
               <div class="inline-block relative w-full">
-                <select class="block mt-1 mb-1 appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-                  <option>Bicycle Touring</option>
-                  <option>Backpacking</option>
-                  <option>Car Trip</option>
+                <select v-model="advType" class="block mt-1 mb-1 appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                  <option value="1">
+                    Bicycle Touring
+                  </option>
+                  <option value="2">
+                    Backpacking
+                  </option>
+                  <option value="3">
+                    Car Trip
+                  </option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
@@ -40,16 +48,25 @@
               </div>
             </div>
             <div class="inline-block relative w-full">
-              <select class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-                <option>In Planning</option>
-                <option>In Progress</option>
-                <option>Completed</option>
+              <select v-model="advStatus" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                <option value="1">
+                  In Planning
+                </option>
+                <option value="2">
+                  In Progress
+                </option>
+                <option value="3">
+                  Completed
+                </option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
               </div>
             </div>
-            <button class="flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline">
+            <button
+              class="flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
+              @click="createAdv"
+            >
               Create!
             </button>
           </div>
@@ -62,7 +79,9 @@
             <img src="~/static/Portrait_Placeholder.png" style="height:150pt"></img>
           </div>
           <div>
-            <button class="flex mt-1 px-2 py-2 w-full border rounded bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline">Upload Photo</button>
+            <button class="flex mt-1 px-2 py-2 w-full border rounded bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline">
+              Upload Photo
+            </button>
           </div>
         </div> <!-- Right -->
       </div>
@@ -79,7 +98,27 @@ export default {
   //  const uname = params.username
   //  const userData = await $axios.$get('http://localhost:8000/api/rest/adventures/' + uname)
   // },
+  data () {
+    return {
+      advName: '',
+      advType: 1,
+      advStatus: 1
+    }
+  },
   mounted () {
+  },
+  methods: {
+    async createAdv () {
+      const newAdv = {
+        user: this.$store.state.user.user_id,
+        advName: this.advName,
+        advType: this.advType,
+        advStatus: this.advStatus
+      }
+      const response = await this.$axios.$post('http://localhost:8000/api/rest/adventures/', newAdv)
+      //TODO add data to store and clean up.
+      //console.log("Let's do it!", newAdv, response)
+      }
   },
   layout: 'editor'
 }
