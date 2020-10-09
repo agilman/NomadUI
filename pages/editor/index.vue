@@ -5,23 +5,15 @@
         <div>
           <h1>Adventures:</h1>
           <div id="advList" class="flex-col">
-            <div id="advItem1" class="border rounded mt-1 mb-1 py-2 px-2 justify-between">
+            <div v-for="adv in adventures" :key="adv.id" class="border rounded mt-1 mb-1 py-2 px-2 justify-between">
               <span>
-                PDX -> SF -> Yosemite
+                {{ adv.name }}
               </span>
               <span>
-                <button class="border rounded py-2 px-2 hover:shadow-outline">delete</button>
-              </span>
-            </div>
-            <div id="advItem1" class="flex-row border rounded mb-1 py-2 px-2 justify-between">
-              <div class="flex jutoify-center">
-                PDX -> Mexico
-              </div>
-              <div class="flex">
                 <button class="border rounded py-2 px-2 hover:shadow-outline">
                   delete
                 </button>
-              </div>
+              </span>
             </div>
           </div>
           <br>
@@ -98,14 +90,19 @@ export default {
   //  const uname = params.username
   //  const userData = await $axios.$get('http://localhost:8000/api/rest/adventures/' + uname)
   // },
+  async fetch () {
+    this.adventures = await this.$axios.$get('http://localhost:8000/api/rest/me/' + this.$store.state.user.user_id)
+      .then(function (response) {
+        return response.adventures
+      })
+  },
   data () {
     return {
       advName: '',
       advType: 1,
-      advStatus: 1
+      advStatus: 1,
+      adventures: []
     }
-  },
-  mounted () {
   },
   methods: {
     async createAdv () {
@@ -116,9 +113,9 @@ export default {
         advStatus: this.advStatus
       }
       const response = await this.$axios.$post('http://localhost:8000/api/rest/adventures/', newAdv)
-      //TODO add data to store and clean up.
-      //console.log("Let's do it!", newAdv, response)
-      }
+      // TODO add data to store and clean up.
+      console.log("Let's do it!", newAdv, response)
+    }
   },
   layout: 'editor'
 }
