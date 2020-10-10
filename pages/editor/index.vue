@@ -113,8 +113,12 @@ export default {
         advStatus: this.advStatus
       }
       const response = await this.$axios.$post('http://localhost:8000/api/rest/adventures/', newAdv)
-      // TODO add data to store and clean up.
-      console.log("Let's do it!", newAdv, response)
+      // Add new data to adventure list
+      this.adventures.push(response)
+      // reset adventure creation options
+      this.advName = ''
+      this.advType = 1
+      this.advStatus = 1
     }
   },
   layout: 'editor'
