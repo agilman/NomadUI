@@ -10,7 +10,7 @@
                 {{ adv.name }}
               </span>
               <span>
-                <button class="border rounded py-2 px-2 hover:shadow-outline">
+                <button class="border rounded py-2 px-2 hover:shadow-outline" @click="deleteAdv(adv.id)">
                   delete
                 </button>
               </span>
@@ -83,13 +83,6 @@
 
 <script>
 export default {
-  // TODO: get logged in userID... if not logged in redirect to login page.
-  // if logged in, get users adventures
-  // if user nas adventures, display a list of them
-  //  async asyncData ({ $axios, params }) {
-  //  const uname = params.username
-  //  const userData = await $axios.$get('http://localhost:8000/api/rest/adventures/' + uname)
-  // },
   async fetch () {
     this.adventures = await this.$axios.$get('http://localhost:8000/api/rest/me/' + this.$store.state.user.user_id)
       .then(function (response) {
@@ -113,12 +106,23 @@ export default {
         advStatus: this.advStatus
       }
       const response = await this.$axios.$post('http://localhost:8000/api/rest/adventures/', newAdv)
+      // TODO This should be done in then() clause with exception handling...
       // Add new data to adventure list
       this.adventures.push(response)
       // reset adventure creation options
       this.advName = ''
       this.advType = 1
       this.advStatus = 1
+    },
+    async deleteAdv (advId) {
+      await this.$axios.$delete('http://localhost:8000/api/rest/adventures/' + advId)
+      // TODO this should be done in a then() clause wtih exception handling...
+      for (let i = 0; i < this.adventures.length; i++) {
+        if (this.adventures[i].id === advId) {
+          this.adventures.splice(i, 1)
+          break
+        }
+      }
     }
   },
   layout: 'editor'
