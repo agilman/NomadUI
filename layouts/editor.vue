@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- NAV BAR -->
-    <nav class="nav flex flex-wrap items-center justify-between px-4 bg-teal-500">
+    <nav class="nav flex flex-wrap items-center justify-between px-4 bg-teal-500 border-b border-black">
       <!-- BRANDKING -->
       <div class="flex items-center mr-6 py-3 text-white">
         <nuxt-link to="/" class="font-semibold text-xl tracking-tight">
@@ -17,6 +17,23 @@
           </div>
         </div>
       </span>
+    </nav>
+    <nav class="nav flex flex-wrap items-center jusitify-between px-4 bg-teal-500">
+      <div class="flex items-center mr-6 py-3 text-white">
+        <nuxt-link to="/editor/maps" class="tracking-tight">
+          Map Editor
+        </nuxt-link>
+      </div>
+      <div class="flex items-center mr-6 py-3 text-white">
+        <nuxt-link to="/editor/blogs" class="tracking-tight">
+          Blog Editor
+        </nuxt-link>
+      </div>
+      <div class="flex items-center mr-6 py-3 text-white">
+        <nuxt-link to="/editor/gear" class="tracking-tight">
+          Gear Editor
+        </nuxt-link>
+      </div>
     </nav>
     <!-- END NAV BAR -->
 

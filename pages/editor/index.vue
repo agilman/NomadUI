@@ -134,6 +134,6 @@ export default {
 </script>
 <style>
 .active{
-  @apply bg-blue-700;
+  @apply bg-teal-600;
 }
 </style>
