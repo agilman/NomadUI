@@ -5,7 +5,7 @@
         <div>
           <h1>Adventures:</h1>
           <div id="advList" class="flex-col">
-            <div v-for="adv in adventures" :key="adv.id" class="border rounded mt-1 mb-1 py-2 px-2 justify-between">
+            <div v-for="(adv, index) in adventures" :key="adv.id" :class="{active: index == activeAdvIndex}" class="border rounded mt-1 mb-1 py-2 px-2 justify-between" @click="setActiveAdv(index)">
               <span>
                 {{ adv.name }}
               </span>
@@ -94,10 +94,14 @@ export default {
       advName: '',
       advType: 1,
       advStatus: 1,
-      adventures: []
+      adventures: [],
+      activeAdvIndex: 0 // 0th adv is default active
     }
   },
   methods: {
+    setActiveAdv (n) {
+      this.activeAdvIndex = n
+    },
     async createAdv () {
       const newAdv = {
         user: this.$store.state.user.user_id,
@@ -128,3 +132,8 @@ export default {
   layout: 'editor'
 }
 </script>
+<style>
+.active{
+  @apply bg-blue-700;
+}
+</style>
