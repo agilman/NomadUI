@@ -1,6 +1,6 @@
 <template>
   <div>
-    Hello World! Maps!
+    Hello World! Blogs!
   </div>
 </template>
 
