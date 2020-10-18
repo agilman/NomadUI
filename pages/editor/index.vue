@@ -5,12 +5,22 @@
         <div>
           <h1>Adventures:</h1>
           <div id="advList" class="flex-col">
-            <div v-for="(adv, index) in adventures" :key="adv.id" :class="{active: index == activeAdvIndex}" class="border rounded mt-1 mb-1 py-2 px-2 justify-between" @click="setActiveAdv(index)">
-              <span>
+            <div
+              v-for="(adv, index) in adventures"
+              :key="adv.id"
+              :class="{active: index == activeAdvIndex}"
+              class="flex border rounded mt-1 mb-1 py-2 px-2 justify-between cursor-pointer"
+              @click="setActiveAdv(index)"
+            >
+              <span class="py-2 px-2">
                 {{ adv.name }}
               </span>
               <span>
-                <button class="border rounded py-2 px-2 hover:shadow-outline" @click="deleteAdv(adv.id)">
+                <button
+                  class="border rounded py-2 px-2 hover:shadow-outline"
+                  @click="deleteAdv(adv.id)"
+                  @click.stop
+                >
                   delete
                 </button>
               </span>
