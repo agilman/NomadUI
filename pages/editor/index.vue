@@ -94,10 +94,14 @@
 <script>
 export default {
   async fetch () {
-    this.adventures = await this.$axios.$get('http://localhost:8000/api/rest/me/' + this.$store.state.user.user_id)
-      .then(function (response) {
-        return response.adventures
-      })
+    if (!this.$store.state.editor.adventures.length) {
+      const res = await this.$axios.$get('http://localhost:8000/api/rest/me/' + this.$store.state.user.user_id)
+      this.$store.commit('editor/setAdventures', res.adventures)
+      this.$store.commit('editor/setActiveAdv', 0)
+      this.adventures = res.adventures
+    } else {
+      this.adventures = this.$store.state.editor.adventures
+    }
   },
   data () {
     return {
@@ -105,11 +109,13 @@ export default {
       advType: 1,
       advStatus: 1,
       adventures: [],
-      activeAdvIndex: 0 // 0th adv is default active
+      activeAdvIndex: 0
     }
   },
   methods: {
     setActiveAdv (n) {
+      // set in store
+      this.$store.commit('editor/setActiveAdv', n)
       this.activeAdvIndex = n
     },
     async createAdv () {
@@ -120,9 +126,10 @@ export default {
         advStatus: this.advStatus
       }
       const response = await this.$axios.$post('http://localhost:8000/api/rest/adventures/', newAdv)
-      // TODO This should be done in then() clause with exception handling...
       // Add new data to adventure list
+      this.$store.commit('editor/addAdventure', response)
       this.adventures.push(response)
+      this.activeAdvIndex = this.adventures.length - 1
       // reset adventure creation options
       this.advName = ''
       this.advType = 1
@@ -131,6 +138,7 @@ export default {
     async deleteAdv (advId) {
       await this.$axios.$delete('http://localhost:8000/api/rest/adventures/' + advId)
       // TODO this should be done in a then() clause wtih exception handling...
+      this.$store.commit('editor/removeAdventure', advId)
       for (let i = 0; i < this.adventures.length; i++) {
         if (this.adventures[i].id === advId) {
           this.adventures.splice(i, 1)
