@@ -12,7 +12,7 @@
       <div class="flex flex-grow justify-between ml-2 px-2">
         <div>
           <nuxt-link to="/editor" class="text-teal-200">
-            Adventure editor
+            Adventure editor | {{ activeAdvName }}
           </nuxt-link>
         </div>
         <!-- AUTH -->
@@ -69,6 +69,13 @@ export default {
     },
     userName () {
       return this.$store.state.user.username
+    },
+    activeAdvName () {
+      if (this.$store.state.editor.adventures[this.$store.state.editor.activeAdvIndex]) {
+        return this.$store.state.editor.adventures[this.$store.state.editor.activeAdvIndex].name
+      } else {
+        return ''
+      }
     }
   },
   mounted () {

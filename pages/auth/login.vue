@@ -54,7 +54,7 @@ export default {
 
             const decoded = b64ToUtf8(slice2)
             const decodedObj = JSON.parse(decoded)
-            // TODO : add to username and decodedObj.user_id to vuex
+
             this.$store.commit('user/setId', decodedObj.user_id)
             this.$store.commit('user/setUserName', this.user.username)
           })
