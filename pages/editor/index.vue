@@ -98,25 +98,32 @@ export default {
       const res = await this.$axios.$get('http://localhost:8000/api/rest/me/' + this.$store.state.user.user_id)
       this.$store.commit('editor/setAdventures', res.adventures)
       this.$store.commit('editor/setActiveAdv', 0)
-      this.adventures = res.adventures
+      console.log('fetched data...', res.adventures)
     } else {
-      this.adventures = this.$store.state.editor.adventures
+      console.log('there is already data in store... not fetching')
+      // pass
     }
   },
   data () {
     return {
       advName: '',
       advType: 1,
-      advStatus: 1,
-      adventures: [],
-      activeAdvIndex: 0
+      advStatus: 1
+    }
+  },
+  computed: {
+    adventures () {
+      console.log('computed adventures', this.$store.state.editor.adventures)
+      return this.$store.state.editor.adventures
+    },
+    activeAdvIndex () {
+      return this.$store.state.editor.activeAdvIndex
     }
   },
   methods: {
     setActiveAdv (n) {
       // set in store
       this.$store.commit('editor/setActiveAdv', n)
-      this.activeAdvIndex = n
     },
     async createAdv () {
       const newAdv = {
@@ -128,8 +135,6 @@ export default {
       const response = await this.$axios.$post('http://localhost:8000/api/rest/adventures/', newAdv)
       // Add new data to adventure list
       this.$store.commit('editor/addAdventure', response)
-      this.adventures.push(response)
-      this.activeAdvIndex = this.adventures.length - 1
       // reset adventure creation options
       this.advName = ''
       this.advType = 1
@@ -139,12 +144,6 @@ export default {
       await this.$axios.$delete('http://localhost:8000/api/rest/adventures/' + advId)
       // TODO this should be done in a then() clause wtih exception handling...
       this.$store.commit('editor/removeAdventure', advId)
-      for (let i = 0; i < this.adventures.length; i++) {
-        if (this.adventures[i].id === advId) {
-          this.adventures.splice(i, 1)
-          break
-        }
-      }
     }
   },
   layout: 'editor'
