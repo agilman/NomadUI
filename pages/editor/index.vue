@@ -98,9 +98,7 @@ export default {
       const res = await this.$axios.$get('http://localhost:8000/api/rest/me/' + this.$store.state.user.user_id)
       this.$store.commit('editor/setAdventures', res.adventures)
       this.$store.commit('editor/setActiveAdv', 0)
-      console.log('fetched data...', res.adventures)
     } else {
-      console.log('there is already data in store... not fetching')
       // pass
     }
   },
@@ -113,7 +111,6 @@ export default {
   },
   computed: {
     adventures () {
-      console.log('computed adventures', this.$store.state.editor.adventures)
       return this.$store.state.editor.adventures
     },
     activeAdvIndex () {
