@@ -1,4 +1,4 @@
-** TODO [8/9]
+** TODO [12/15]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -9,9 +9,16 @@
    - [X] Add adventure creation interface
    - [X] Add call to get adventures from api
    - [ ] Fix burger navbar
-   - [ ] Create second navbar for editor, visible upon adv creation and selection.
-   - [ ] Create navigation for Map editor, Blog Editor, gear editor.
+   - [X] Create second navbar for editor, visible upon adv creation and selection.
+   - [X] Create navigation for Map editor, Blog Editor, gear editor.
+   - [X] Add a map on Map editor page
+   - [ ] Created a 'selected' editor page for navbar highlight
+   - [ ] Change style of nav items
+   - [X] Decide whether or not to replicate multiple map or just 1 per adventure -- keep multiple
+   - [ ] Hide 'Create' button on map editor page as needed
+   - [ ] Hide second nav bar as needed
+   - [ ] Create a data binding for new map name and a method binding for create click
 
-** BUGS [0/2]
-   - [ ] On Adventure delete, stop signal propogation to avoid changing selected adventure
+** BUGS [1/2]
+   - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [ ] On adventure delete, if current adventure gets moved, need to adjust

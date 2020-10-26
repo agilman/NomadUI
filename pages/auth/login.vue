@@ -7,7 +7,7 @@
     </h2>
     <div>
       <label for="user">nick</label>
-      <input v-model="user.username" type="text">user</input>
+      <input id="user" v-model="user.username" type="text">user</input>
 
       <label for="password">Password</label>
       <input id="password" v-model="user.password" type="password">password</input>
