@@ -5,13 +5,18 @@
         <div>
           <h1>Maps:</h1>
           <div id="mapList" class="flex-col">
-            <div class="flex border rounded py-2 px-2 justify-between cursor-pointer">
+            <div
+              v-for="map in maps"
+              :key="map.id"
+              class="flex border rounded py-2 px-2 justify-between cursor-pointer"
+            >
               <span class="py-2 px-2">
-                Map1
+                {{ map.name }}
               </span>
               <span>
                 <button
                   class="flex border rounded py-2 px-2 hover:shadow-outline"
+                  @click="deleteMap(map.id)"
                   @click.stop
                 >
                   delete
@@ -22,10 +27,10 @@
           <h1>New Map:</h1>
           <input
             id="mapName"
+            v-model="newMapName"
             type="text"
             class="w-full shadow border rounded py-2 px-2 focus:shadow-outline"
             placeholder="Map Name"
-            v-bind="newMapName"
           ></input>
           <button
             class=" flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
@@ -49,23 +54,45 @@
 
 <script>
 export default {
+  async fetch () {
+    const advId = this.$store.state.editor.adventures[this.$store.state.editor.activeAdvIndex].id
+    const res = await this.$axios.$get('http://localhost:8000/api/rest/advMaps/' + advId)
+    // this.$store.commit('editor/setAdventures', res.adventures)
+    // this.$store.commit('editor/setActiveAdv', 0)
+    this.maps = res
+  },
   data () {
     return {
-      newMapName: ''
+      newMapName: '',
+      maps: []
     }
   },
   methods: {
     async createNewMap () {
-      console.log('got click')
+      const advIndex = this.$store.state.editor.activeAdvIndex
+      const advId = this.$store.state.editor.adventures[advIndex].id
       const newMap = {
-        adv: this.$store.state.editor.adventures[this.$store.state.editor.activeAdvIndex].id,
-        mapName: this.newMapName
+        adv: advId,
+        name: this.newMapName
       }
       const response = await this.$axios.$post('http://localhost:8000/api/rest/maps/', newMap)
       // Add new data to adventure list
-      console.log(response)
-    }
+      this.maps.push(response)
 
+      // clear name field
+      this.newMapName = ''
+    },
+    async deleteMap (mapId) {
+      await this.$axios.$delete('http://localhost:8000/api/rest/maps/' + mapId)
+      // TODO this should be done in a then() clause wtih exception handling...
+      // this.$store.commit('editor/removeAdventure', advId)
+      for (let i = 0; i < this.maps.length; i++) {
+        if (this.maps[i].id === mapId) {
+          this.maps.splice(i, 1)
+          break
+        }
+      }
+    }
   },
   layout: 'editor'
 }
