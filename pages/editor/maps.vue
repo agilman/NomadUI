@@ -26,6 +26,8 @@
               </span>
             </div>
           </div>
+        </div>
+        <div>
           <h1>New Map:</h1>
           <input
             id="mapName"
@@ -41,10 +43,29 @@
             Create!
           </button>
         </div>
+        <div>
+          <h1>New Segment:</h1>
+          <div
+            :class="isStartSet()"
+          >
+            Start Set
+          </div>
+          <div
+            :class="isEndSet()"
+          >
+            End Set
+          </div>
+          <button
+            class=" flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
+            @click="createNewSegment"
+          >
+            Save Segment
+          </button>
+        </div>
       </div>
       <div class="flex w-9/12">
         <no-ssr>
-          <l-map :zoom="6" :center="[46.9464418,-121.1277591]" style="height:475px">
+          <l-map :zoom="6" :center="[46.9464418,-121.1277591]" style="height:475px" @click="mapClick">
             <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
             <l-marker :lat-lng="[48.73293,-122.50107]" />
           </l-map>
@@ -68,7 +89,9 @@ export default {
     return {
       newMapName: '',
       maps: [],
-      activeMapIndex: 0
+      activeMapIndex: 0,
+      startPoint: [],
+      endPoint: []
     }
   },
   methods: {
@@ -98,6 +121,32 @@ export default {
     },
     setActiveMap (n) {
       this.activeMapIndex = n
+    },
+    createNewSegment () {
+      console.log('CREATE NEW SEGMENT :')
+      console.log(this.startPoint)
+      console.log(this.endPoint)
+    },
+    mapClick (event) {
+      if (!this.startPoint.length) {
+        this.startPoint.push([event.latlng.lat, event.latlng.lng])
+      } else {
+        this.endPoint.push([event.latlng.lat, event.latlng.lng])
+      }
+    },
+    isStartSet () {
+      if (!this.startPoint.length) {
+        return 'bg-red-300'
+      } else {
+        return 'bg-teal-300'
+      }
+    },
+    isEndSet () {
+      if (!this.endPoint.length) {
+        return 'bg-red-300'
+      } else {
+        return 'bg-teal-300'
+      }
     }
   },
   layout: 'editor'
