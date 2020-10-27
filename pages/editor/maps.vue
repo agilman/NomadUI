@@ -6,9 +6,11 @@
           <h1>Maps:</h1>
           <div id="mapList" class="flex-col">
             <div
-              v-for="map in maps"
+              v-for="(map, index) in maps"
               :key="map.id"
+              :class="{active: index == activeMapIndex}"
               class="flex border rounded py-2 px-2 mb-1 justify-between cursor-pointer"
+              @click="setActiveMap(index)"
             >
               <span class="py-2 px-2">
                 {{ map.name }}
@@ -60,11 +62,13 @@ export default {
     // this.$store.commit('editor/setAdventures', res.adventures)
     // this.$store.commit('editor/setActiveAdv', 0)
     this.maps = res
+    this.activeMapIndex = res.length - 1
   },
   data () {
     return {
       newMapName: '',
-      maps: []
+      maps: [],
+      activeMapIndex: 0
     }
   },
   methods: {
@@ -81,19 +85,26 @@ export default {
 
       // clear name field
       this.newMapName = ''
+      this.activeMapIndex = this.maps.length - 1
     },
     async deleteMap (mapId) {
       await this.$axios.$delete('http://localhost:8000/api/rest/maps/' + mapId)
-      // TODO this should be done in a then() clause wtih exception handling...
-      // this.$store.commit('editor/removeAdventure', advId)
       for (let i = 0; i < this.maps.length; i++) {
         if (this.maps[i].id === mapId) {
           this.maps.splice(i, 1)
           break
         }
       }
+    },
+    setActiveMap (n) {
+      this.activeMapIndex = n
     }
   },
   layout: 'editor'
 }
 </script>
+<style>
+.active{
+  @apply bg-teal-600;
+}
+</style>
