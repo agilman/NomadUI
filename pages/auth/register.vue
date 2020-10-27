@@ -27,6 +27,10 @@
 </template>
 
 <script>
+function b64ToUtf8 (str) {
+  str = str.replace(/\s/g, '')
+  return decodeURIComponent(escape(window.atob(str)))
+}
 export default {
   data () {
     return {
@@ -36,6 +40,10 @@ export default {
   auth: false,
   methods: {
     async register () {
+      // Strategy:
+      // - Send registration request to backend
+      // - Upon successful registration, send a login request
+      // - Store token and authenticated used info to store
       try {
         /* TODO: verify data!!! */
         const userData = {
@@ -44,11 +52,10 @@ export default {
           password: this.user.password1
         }
 
-        console.log('about to send registration request')
-
         const registerResponse = await this.$axios.post('http://127.0.0.1:8000/auth/register/', userData)
-
-        console.log('GOT HERE', registerResponse)
+        if (registerResponse.status === 200) {
+          // pass
+        }
 
         const loginResponse = await this.$auth.loginWith('local', {
           data: {
@@ -56,9 +63,24 @@ export default {
             password: userData.password
           }
         })
+        // //
+        const token = loginResponse.data.access
+        const t0 = token.indexOf('.')
+        // const slice1 = token.slice(0, t0)
+        // console.log('slice1:', slice1)
+        const remainder = token.slice(t0 + 1)
 
-        console.log('SHOULD HAVE RECEIVED A  TOKEN BY NOW!', loginResponse)
+        const t1 = remainder.indexOf('.')
+        const slice2 = remainder.slice(0, t1)
+        // console.log('slice2:', slice2)
 
+        const decoded = b64ToUtf8(slice2)
+        const decodedObj = JSON.parse(decoded)
+
+        this.$store.commit('user/setId', decodedObj.user_id)
+        this.$store.commit('user/setUserName', this.user.username)
+
+        // //
         this.$router.push('/')
       } catch (e) {
         console.log(e)

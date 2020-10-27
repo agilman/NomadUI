@@ -8,7 +8,7 @@
             <div
               v-for="map in maps"
               :key="map.id"
-              class="flex border rounded py-2 px-2 justify-between cursor-pointer"
+              class="flex border rounded py-2 px-2 mb-1 justify-between cursor-pointer"
             >
               <span class="py-2 px-2">
                 {{ map.name }}
