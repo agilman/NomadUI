@@ -1,4 +1,4 @@
-** TODO [15/20]
+** TODO [16/20]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -12,7 +12,7 @@
    - [X] Create second navbar for editor, visible upon adv creation and selection.
    - [X] Create navigation for Map editor, Blog Editor, gear editor.
    - [X] Add a map on Map editor page
-   - [ ] Change style of nav items -- sync them, and show selected.
+   - [X] Change style of nav items -- sync them, and show selected.
    - [X] Decide whether or not to replicate multiple map or just 1 per adventure -- keep multiple
    - [ ] Hide 'Create' button on map editor page as needed
    - [ ] Hide second nav bar as needed
@@ -24,3 +24,4 @@
 ** BUGS [1/2]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [ ] On adventure delete, if current adventure gets moved, need to adjust
+   - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom
