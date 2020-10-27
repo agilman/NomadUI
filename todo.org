@@ -1,4 +1,4 @@
-** TODO [14/19]
+** TODO [15/20]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -12,14 +12,14 @@
    - [X] Create second navbar for editor, visible upon adv creation and selection.
    - [X] Create navigation for Map editor, Blog Editor, gear editor.
    - [X] Add a map on Map editor page
-   - [ ] Created a 'selected' editor page for navbar highlight
-   - [ ] Change style of nav items
+   - [ ] Change style of nav items -- sync them, and show selected.
    - [X] Decide whether or not to replicate multiple map or just 1 per adventure -- keep multiple
    - [ ] Hide 'Create' button on map editor page as needed
    - [ ] Hide second nav bar as needed
    - [X] Create a data binding for new map name and a method binding for create click
    - [X] Do async map fetch on page load... save to store? (not saving for store now)
-   - [ ] Track selected map, and change its style... on map editor page
+   - [X] Track selected map, and change its style... on map editor page
+   - [ ] Create UI for map segment creation.
 
 ** BUGS [1/2]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
