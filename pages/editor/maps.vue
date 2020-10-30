@@ -68,7 +68,7 @@
           <l-map ref="myMap" :zoom="6" :center="[46.9464418,-121.1277591]" style="height:475px" @click="mapClick">
             <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
             <l-marker :lat-lng="[48.73293,-122.50107]" />
-            <l-layer-group ref="previousPathLayer" />
+            <l-geo-json :geojson="geojson" />
             <l-layer-group ref="startLayer" />
             <l-layer-group ref="endLayer" />
             <l-layer-group ref="newSegmentLayer" />
@@ -90,17 +90,11 @@ export default {
 
     const mapId = this.maps[this.activeMapIndex].id
     const path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
-
-    // const pathLayer = this.$refs.previousPathLayer.mapObject
-    const pathLayer = this.$refs.previousPathLayer.mapObject
-    // const mygeojson = this.$L.GeoJSON().addTo(pathLayer)
-    const mygeojson = this.$L.geoJson().addData(path)
-    mygeojson.addTo(pathLayer)
-    // mygeojson.addData(path)
-
-    // console.log('test')
-    console.log(mygeojson)
-    console.log(pathLayer)
+    this.geojson = path
+    // set last coordinates as startPoint for new segments
+    const coords = path.features[path.features.length - 1].geometry.coordinates
+    const last = coords[coords.length - 1]
+    this.startPoint = [last[1], last[0]]
   },
   data () {
     return {
@@ -108,7 +102,8 @@ export default {
       maps: [],
       activeMapIndex: 0,
       startPoint: [],
-      endPoint: []
+      endPoint: [],
+      geojson: []
     }
   },
   methods: {
@@ -147,17 +142,23 @@ export default {
       }
 
       const response = await this.$axios.$post('http://localhost:8000/api/rest/segments/' + mapId, newSegment)
-      console.log(response)
-      // const segment = [this.startPoint, this.endPoint]
-      // const layer = this.$refs.startLayer.mapObject
-      // const myLine = this.$L.polyline(segment)
-      // myLine.addTo(layer)
+      this.geojson.features.push(response)
+      // clear layers...
+      this.$refs.startLayer.mapObject.clearLayers()
+      this.$refs.endLayer.mapObject.clearLayers()
+      this.$refs.newSegmentLayer.mapObject.clearLayers()
+      // unset endSegment
+      this.startPoint = this.endPoint
+      this.endPoint = []
+      // draw new startPoint
+      const layer = this.$refs.startLayer.mapObject
+      this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
     },
     mapClick (event) {
       if (!this.startPoint.length) {
         this.startPoint = [event.latlng.lat, event.latlng.lng]
         const layer = this.$refs.startLayer.mapObject
-        this.$L.circle(this.startPoint, { radius: 4000, color: 'green' }).addTo(layer)
+        this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
       } else {
         // clear previous
         const layer = this.$refs.endLayer.mapObject
@@ -165,7 +166,7 @@ export default {
         layer.clearLayers()
         segmentLayer.clearLayers()
         this.endPoint = [event.latlng.lat, event.latlng.lng]
-        this.$L.circle(this.endPoint, { radius: 4000, color: 'red' }).addTo(layer)
+        this.$L.circle(this.endPoint, { radius: 100, color: 'red' }).addTo(layer)
 
         const segment = [this.startPoint, this.endPoint]
         this.$L.polyline(segment).addTo(segmentLayer)
