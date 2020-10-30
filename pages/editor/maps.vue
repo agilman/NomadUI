@@ -65,9 +65,13 @@
       </div>
       <div class="flex w-9/12">
         <no-ssr>
-          <l-map :zoom="6" :center="[46.9464418,-121.1277591]" style="height:475px" @click="mapClick">
+          <l-map ref="myMap" :zoom="6" :center="[46.9464418,-121.1277591]" style="height:475px" @click="mapClick">
             <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
             <l-marker :lat-lng="[48.73293,-122.50107]" />
+            <l-layer-group ref="previousPathLayer" />
+            <l-layer-group ref="startLayer" />
+            <l-layer-group ref="endLayer" />
+            <l-layer-group ref="newSegmentLayer" />
           </l-map>
         </no-ssr>
       </div>
@@ -78,12 +82,25 @@
 <script>
 export default {
   async fetch () {
+    // TODO : Consolidate these 2 axios fetches into a single api point
     const advId = this.$store.state.editor.adventures[this.$store.state.editor.activeAdvIndex].id
     const res = await this.$axios.$get('http://localhost:8000/api/rest/advMaps/' + advId)
-    // this.$store.commit('editor/setAdventures', res.adventures)
-    // this.$store.commit('editor/setActiveAdv', 0)
     this.maps = res
     this.activeMapIndex = res.length - 1
+
+    const mapId = this.maps[this.activeMapIndex].id
+    const path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
+
+    // const pathLayer = this.$refs.previousPathLayer.mapObject
+    const pathLayer = this.$refs.previousPathLayer.mapObject
+    // const mygeojson = this.$L.GeoJSON().addTo(pathLayer)
+    const mygeojson = this.$L.geoJson().addData(path)
+    mygeojson.addTo(pathLayer)
+    // mygeojson.addData(path)
+
+    // console.log('test')
+    console.log(mygeojson)
+    console.log(pathLayer)
   },
   data () {
     return {
@@ -103,7 +120,6 @@ export default {
         name: this.newMapName
       }
       const response = await this.$axios.$post('http://localhost:8000/api/rest/maps/', newMap)
-      // Add new data to adventure list
       this.maps.push(response)
 
       // clear name field
@@ -122,16 +138,37 @@ export default {
     setActiveMap (n) {
       this.activeMapIndex = n
     },
-    createNewSegment () {
-      console.log('CREATE NEW SEGMENT :')
-      console.log(this.startPoint)
-      console.log(this.endPoint)
+    async createNewSegment () {
+      const mapId = this.maps[this.activeMapIndex].id
+      const newSegment = {
+        map: mapId,
+        distance: 40, // meters
+        waypoints: [this.startPoint, this.endPoint]
+      }
+
+      const response = await this.$axios.$post('http://localhost:8000/api/rest/segments/' + mapId, newSegment)
+      console.log(response)
+      // const segment = [this.startPoint, this.endPoint]
+      // const layer = this.$refs.startLayer.mapObject
+      // const myLine = this.$L.polyline(segment)
+      // myLine.addTo(layer)
     },
     mapClick (event) {
       if (!this.startPoint.length) {
-        this.startPoint.push([event.latlng.lat, event.latlng.lng])
+        this.startPoint = [event.latlng.lat, event.latlng.lng]
+        const layer = this.$refs.startLayer.mapObject
+        this.$L.circle(this.startPoint, { radius: 4000, color: 'green' }).addTo(layer)
       } else {
-        this.endPoint.push([event.latlng.lat, event.latlng.lng])
+        // clear previous
+        const layer = this.$refs.endLayer.mapObject
+        const segmentLayer = this.$refs.newSegmentLayer.mapObject
+        layer.clearLayers()
+        segmentLayer.clearLayers()
+        this.endPoint = [event.latlng.lat, event.latlng.lng]
+        this.$L.circle(this.endPoint, { radius: 4000, color: 'red' }).addTo(layer)
+
+        const segment = [this.startPoint, this.endPoint]
+        this.$L.polyline(segment).addTo(segmentLayer)
       }
     },
     isStartSet () {
