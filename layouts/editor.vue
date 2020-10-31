@@ -92,7 +92,7 @@ export default {
     }
   },
   mounted () {
-    console.log('route name:', this.$nuxt.$route.name)
+    // pass
   }
 }
 </script>

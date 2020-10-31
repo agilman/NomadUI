@@ -67,8 +67,7 @@
         <no-ssr>
           <l-map ref="myMap" :zoom="6" :center="[46.9464418,-121.1277591]" style="height:475px" @click="mapClick">
             <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
-            <l-marker :lat-lng="[48.73293,-122.50107]" />
-            <l-geo-json :geojson="geojson" />
+            <l-geo-json ref="pathLayer" :geojson="geojson" />
             <l-layer-group ref="startLayer" />
             <l-layer-group ref="endLayer" />
             <l-layer-group ref="newSegmentLayer" />
@@ -88,13 +87,15 @@ export default {
     this.maps = res
     this.activeMapIndex = res.length - 1
 
-    const mapId = this.maps[this.activeMapIndex].id
-    const path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
-    this.geojson = path
-    // set last coordinates as startPoint for new segments
-    const coords = path.features[path.features.length - 1].geometry.coordinates
-    const last = coords[coords.length - 1]
-    this.startPoint = [last[1], last[0]]
+    if (res.length) {
+      const mapId = this.maps[this.activeMapIndex].id
+      const path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
+      this.geojson = path
+      // set last coordinates as startPoint for new segments
+      const coords = path.features[path.features.length - 1].geometry.coordinates
+      const last = coords[coords.length - 1]
+      this.startPoint = [last[1], last[0]]
+    }
   },
   data () {
     return {
@@ -103,7 +104,17 @@ export default {
       activeMapIndex: 0,
       startPoint: [],
       endPoint: [],
-      geojson: []
+      geojson: {
+        type: 'FeatureCollection',
+        features: []
+      }
+    }
+  },
+  updated () {
+    // set map bounds to fit bounds of geojson
+    const bounds = this.$refs.pathLayer.mapObject.getBounds()
+    if ('_southWest' in bounds) {
+      this.$refs.myMap.mapObject.fitBounds(bounds)
     }
   },
   methods: {
