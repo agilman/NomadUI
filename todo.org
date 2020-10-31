@@ -1,4 +1,4 @@
-** TODO [16/20]
+** TODO [18/22]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -19,12 +19,18 @@
    - [X] Create a data binding for new map name and a method binding for create click
    - [X] Do async map fetch on page load... save to store? (not saving for store now)
    - [X] Track selected map, and change its style... on map editor page
-   - [ ] Create UI for map segment creation.
-     - [ ] Create layers for path, newPath, startMarker, endMarker
-     - [ ] on first click -> draw startMarker, on second click -> draw endMarker, and a line between them.
-     - [ ] on 'save segment' click send post
+   - [X] Create UI for map segment creation.
+     - [X] Create layers for path, newPath, startMarker, endMarker
+     - [X] on first click -> draw startMarker, on second click -> draw endMarker, and a line between them.
+     - [X] on 'save segment' click send post
+   - [ ] on map editor page -> Reload map on map change.
+   - [X] On map editor page -> set view on current map
        
-** BUGS [1/3]
+** BUGS [2/4]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [ ] On adventure delete, if current adventure gets moved, need to adjust
+   - [X] on map editor page -> init a geojson so that segment creation will be possible for first map
+   - [ ] On logout, check the console error about error 404 from backend
+
+** CSS [0/1]
    - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom
