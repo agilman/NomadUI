@@ -65,7 +65,7 @@
       </div>
       <div class="flex w-9/12">
         <no-ssr>
-          <l-map ref="myMap" :zoom="6" :center="[46.9464418,-121.1277591]" style="height:475px" @click="mapClick">
+          <l-map ref="myMap" :zoom="6" style="height:475px" @click="mapClick">
             <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
             <l-geo-json ref="pathLayer" :geojson="geojson" />
             <l-layer-group ref="startLayer" />
@@ -80,22 +80,27 @@
 
 <script>
 export default {
-  async fetch () {
+  async asyncData ({ store, $axios }) {
     // TODO : Consolidate these 2 axios fetches into a single api point
-    const advId = this.$store.state.editor.adventures[this.$store.state.editor.activeAdvIndex].id
-    const res = await this.$axios.$get('http://localhost:8000/api/rest/advMaps/' + advId)
-    this.maps = res
-    this.activeMapIndex = res.length - 1
+    const advId = store.state.editor.adventures[store.state.editor.activeAdvIndex].id
+    const res = await $axios.$get('http://localhost:8000/api/rest/advMaps/' + advId)
+    const maps = res
+    const activeMapIndex = res.length - 1
+    let path = {
+      type: 'FeatureCollection',
+      features: []
+    }
+    let startPoint = []
 
     if (res.length) {
-      const mapId = this.maps[this.activeMapIndex].id
-      const path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
-      this.geojson = path
+      const mapId = maps[activeMapIndex].id
+      path = await $axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
       // set last coordinates as startPoint for new segments
       const coords = path.features[path.features.length - 1].geometry.coordinates
       const last = coords[coords.length - 1]
-      this.startPoint = [last[1], last[0]]
+      startPoint = [last[1], last[0]]
     }
+    return { maps, activeMapIndex, geojson: path, startPoint }
   },
   data () {
     return {
@@ -110,12 +115,9 @@ export default {
       }
     }
   },
-  updated () {
-    // set map bounds to fit bounds of geojson
-    const bounds = this.$refs.pathLayer.mapObject.getBounds()
-    if ('_southWest' in bounds) {
-      this.$refs.myMap.mapObject.fitBounds(bounds)
-    }
+  async mounted () {
+    await this.$nextTick()
+    this.boundMap()
   },
   methods: {
     async createNewMap () {
@@ -195,6 +197,12 @@ export default {
         return 'bg-red-300'
       } else {
         return 'bg-teal-300'
+      }
+    },
+    boundMap () {
+      const bounds = this.$refs.pathLayer.mapObject.getBounds()
+      if ('_southWest' in bounds) {
+        this.$refs.myMap.mapObject.fitBounds(bounds)
       }
     }
   },
