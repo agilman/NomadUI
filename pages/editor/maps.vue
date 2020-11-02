@@ -118,6 +118,8 @@ export default {
   async mounted () {
     await this.$nextTick()
     this.boundMap()
+    const layer = this.$refs.startLayer.mapObject
+    this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
   },
   methods: {
     async createNewMap () {
@@ -143,8 +145,35 @@ export default {
         }
       }
     },
-    setActiveMap (n) {
+    async setActiveMap (n) {
       this.activeMapIndex = n
+
+      // clear layers
+      this.$refs.newSegmentLayer.mapObject.clearLayers()
+      this.$refs.startLayer.mapObject.clearLayers()
+      this.$refs.endLayer.mapObject.clearLayers()
+      let path = {
+        type: 'FeatureCollection',
+        features: []
+      }
+      let startPoint = []
+
+      const mapId = this.maps[this.activeMapIndex].id
+      path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
+      // set last coordinates as startPoint for new segments
+      if (path.features.length) {
+        const coords = path.features[path.features.length - 1].geometry.coordinates
+        const last = coords[coords.length - 1]
+        startPoint = [last[1], last[0]]
+      }
+      this.geojson = path
+      this.startPoint = startPoint
+      this.endPoint = []
+      // set map zoom to fit newly loaded geoJSON
+      await this.$nextTick()
+      this.boundMap()
+      const layer = this.$refs.startLayer.mapObject
+      this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
     },
     async createNewSegment () {
       const mapId = this.maps[this.activeMapIndex].id
