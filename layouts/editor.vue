@@ -32,6 +32,7 @@
 
     <!-- Second Nav Bar -->
     <nav
+      v-if="adventures.length"
       class="flex items-center px-4 bg-teal-500"
     >
       <div
@@ -89,6 +90,9 @@ export default {
       } else {
         return ''
       }
+    },
+    adventures () {
+      return this.$store.state.editor.adventures
     }
   },
   mounted () {

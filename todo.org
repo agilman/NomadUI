@@ -1,4 +1,4 @@
-** TODO [18/22]
+** TODO [23/27]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -15,7 +15,7 @@
    - [X] Change style of nav items -- sync them, and show selected.
    - [X] Decide whether or not to replicate multiple map or just 1 per adventure -- keep multiple
    - [ ] Hide 'Create' button on map editor page as needed
-   - [ ] Hide second nav bar as needed
+   - [X] Hide second nav bar as needed
    - [X] Create a data binding for new map name and a method binding for create click
    - [X] Do async map fetch on page load... save to store? (not saving for store now)
    - [X] Track selected map, and change its style... on map editor page
@@ -23,14 +23,22 @@
      - [X] Create layers for path, newPath, startMarker, endMarker
      - [X] on first click -> draw startMarker, on second click -> draw endMarker, and a line between them.
      - [X] on 'save segment' click send post
-   - [ ] on map editor page -> Reload map on map change.
-   - [X] On map editor page -> set view on current map
+   - [X] on map editor page -> Reload map on map change.
+   - [X] On map editor page -> set view on current map.
+   - [X] Hide segment creation if there is no map  created.
+   - [X] Disable segment drawing if there is no map selected.
+   - [X] Center map on meaningful location if there is no maps with coordinates...
+   - [ ] When deleting a map, might have to clearLayers() and unset start and endoint
+   - [ ] When creating a map, also need to cleal layers...
+   - [ ] Add a datetime picker for segment start and end point.
        
-** BUGS [2/4]
+** BUGS [3/6]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [ ] On adventure delete, if current adventure gets moved, need to adjust
+   - [ ] On map delete, also might need to change selected and load and hide layers
    - [X] on map editor page -> init a geojson so that segment creation will be possible for first map
    - [ ] On logout, check the console error about error 404 from backend
+   - [X] map editor fails to load when there are no coordinates in the map.
 
 ** CSS [0/1]
    - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom

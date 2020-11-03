@@ -37,13 +37,14 @@
             placeholder="Map Name"
           ></input>
           <button
-            class=" flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
+            v-if="newMapName"
+            class="flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
             @click="createNewMap"
           >
             Create!
           </button>
         </div>
-        <div>
+        <div v-if="maps.length" class="pt-4">
           <h1>New Segment:</h1>
           <div
             :class="isStartSet()"
@@ -56,6 +57,7 @@
             End Set
           </div>
           <button
+            v-if="startPoint.length && endPoint.length"
             class=" flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
             @click="createNewSegment"
           >
@@ -96,9 +98,11 @@ export default {
       const mapId = maps[activeMapIndex].id
       path = await $axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
       // set last coordinates as startPoint for new segments
-      const coords = path.features[path.features.length - 1].geometry.coordinates
-      const last = coords[coords.length - 1]
-      startPoint = [last[1], last[0]]
+      if (path.features.length) {
+        const coords = path.features[path.features.length - 1].geometry.coordinates
+        const last = coords[coords.length - 1]
+        startPoint = [last[1], last[0]]
+      }
     }
     return { maps, activeMapIndex, geojson: path, startPoint }
   },
@@ -117,9 +121,14 @@ export default {
   },
   async mounted () {
     await this.$nextTick()
-    this.boundMap()
-    const layer = this.$refs.startLayer.mapObject
-    this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
+    if (this.startPoint.length) {
+      this.boundMap()
+      const layer = this.$refs.startLayer.mapObject
+      this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
+    } else {
+      // if there are no coordinates, set map center to pacific northwest
+      this.$refs.myMap.mapObject.setView([46.9464418, -121.1277591], 6)
+    }
   },
   methods: {
     async createNewMap () {
@@ -163,17 +172,21 @@ export default {
       // set last coordinates as startPoint for new segments
       if (path.features.length) {
         const coords = path.features[path.features.length - 1].geometry.coordinates
-        const last = coords[coords.length - 1]
-        startPoint = [last[1], last[0]]
+        if (coords) {
+          const last = coords[coords.length - 1]
+          startPoint = [last[1], last[0]]
+        }
       }
       this.geojson = path
       this.startPoint = startPoint
       this.endPoint = []
       // set map zoom to fit newly loaded geoJSON
       await this.$nextTick()
-      this.boundMap()
-      const layer = this.$refs.startLayer.mapObject
-      this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
+      if (this.startPoint.length) {
+        this.boundMap()
+        const layer = this.$refs.startLayer.mapObject
+        this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
+      }
     },
     async createNewSegment () {
       const mapId = this.maps[this.activeMapIndex].id
@@ -197,21 +210,23 @@ export default {
       this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
     },
     mapClick (event) {
-      if (!this.startPoint.length) {
-        this.startPoint = [event.latlng.lat, event.latlng.lng]
-        const layer = this.$refs.startLayer.mapObject
-        this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
-      } else {
-        // clear previous
-        const layer = this.$refs.endLayer.mapObject
-        const segmentLayer = this.$refs.newSegmentLayer.mapObject
-        layer.clearLayers()
-        segmentLayer.clearLayers()
-        this.endPoint = [event.latlng.lat, event.latlng.lng]
-        this.$L.circle(this.endPoint, { radius: 100, color: 'red' }).addTo(layer)
+      if (this.maps.length) {
+        if (!this.startPoint.length) {
+          this.startPoint = [event.latlng.lat, event.latlng.lng]
+          const layer = this.$refs.startLayer.mapObject
+          this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
+        } else {
+          // clear previous
+          const layer = this.$refs.endLayer.mapObject
+          const segmentLayer = this.$refs.newSegmentLayer.mapObject
+          layer.clearLayers()
+          segmentLayer.clearLayers()
+          this.endPoint = [event.latlng.lat, event.latlng.lng]
+          this.$L.circle(this.endPoint, { radius: 100, color: 'red' }).addTo(layer)
 
-        const segment = [this.startPoint, this.endPoint]
-        this.$L.polyline(segment).addTo(segmentLayer)
+          const segment = [this.startPoint, this.endPoint]
+          this.$L.polyline(segment).addTo(segmentLayer)
+        }
       }
     },
     isStartSet () {
