@@ -50,11 +50,17 @@
             :class="isStartSet()"
           >
             Start Set
+            <div>
+              <VueCtkDateTimePicker v-model="startTime" />
+            </div>
           </div>
           <div
             :class="isEndSet()"
           >
             End Set
+            <div>
+              <VueCtkDateTimePicker v-model="endTime" />
+            </div>
           </div>
           <button
             v-if="startPoint.length && endPoint.length"
@@ -112,7 +118,9 @@ export default {
       maps: [],
       activeMapIndex: 0,
       startPoint: [],
+      startTime: '',
       endPoint: [],
+      endTime: '',
       geojson: {
         type: 'FeatureCollection',
         features: []
@@ -196,6 +204,7 @@ export default {
         waypoints: [this.startPoint, this.endPoint]
       }
 
+      console.log('lets see the times!!', this.startTime, this.endTime)
       const response = await this.$axios.$post('http://localhost:8000/api/rest/segments/' + mapId, newSegment)
       this.geojson.features.push(response)
       // clear layers...
