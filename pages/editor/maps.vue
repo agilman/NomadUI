@@ -152,6 +152,17 @@ export default {
       // clear name field
       this.newMapName = ''
       this.activeMapIndex = this.maps.length - 1
+      // clear time
+      this.startTime = ''
+      this.endTime = ''
+      // clear map
+      this.geojson = {
+        type: 'FeatureCollection',
+        features: []
+      }
+      this.$refs.newSegmentLayer.mapObject.clearLayers()
+      this.$refs.startLayer.mapObject.clearLayers()
+      this.$refs.endLayer.mapObject.clearLayers()
     },
     async deleteMap (mapId) {
       await this.$axios.$delete('http://localhost:8000/api/rest/maps/' + mapId)
@@ -198,13 +209,17 @@ export default {
     },
     async createNewSegment () {
       const mapId = this.maps[this.activeMapIndex].id
+      const stime = this.$moment(this.startTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
+      const ftime = this.$moment(this.endTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
+
       const newSegment = {
         map: mapId,
         distance: 40, // meters
+        startTime: stime,
+        endTime: ftime,
         waypoints: [this.startPoint, this.endPoint]
       }
 
-      console.log('lets see the times!!', this.startTime, this.endTime)
       const response = await this.$axios.$post('http://localhost:8000/api/rest/segments/' + mapId, newSegment)
       this.geojson.features.push(response)
       // clear layers...
@@ -214,6 +229,8 @@ export default {
       // unset endSegment
       this.startPoint = this.endPoint
       this.endPoint = []
+      this.startTime = ''
+      this.endTime = ''
       // draw new startPoint
       const layer = this.$refs.startLayer.mapObject
       this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)

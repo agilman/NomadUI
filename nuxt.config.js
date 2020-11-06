@@ -49,7 +49,9 @@ export default {
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    // Doc: https://github.com/nuxt-community/moment-module
+    '@nuxtjs/moment'
   ],
   /*
   ** Nuxt.js modules
