@@ -66,6 +66,7 @@
               </div>
             </div>
             <button
+              v-if="advName.length"
               class="flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
               @click="createAdv"
             >
