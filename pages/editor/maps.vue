@@ -88,7 +88,7 @@
 
 <script>
 export default {
-  async asyncData ({ store, $axios }) {
+  async asyncData ({ store, $axios, $moment }) {
     // TODO : Consolidate these 2 axios fetches into a single api point
     const advId = store.state.editor.adventures[store.state.editor.activeAdvIndex].id
     const res = await $axios.$get('http://localhost:8000/api/rest/advMaps/' + advId)
@@ -99,6 +99,7 @@ export default {
       features: []
     }
     let startPoint = []
+    let startTime = null
 
     if (res.length) {
       const mapId = maps[activeMapIndex].id
@@ -108,9 +109,18 @@ export default {
         const coords = path.features[path.features.length - 1].geometry.coordinates
         const last = coords[coords.length - 1]
         startPoint = [last[1], last[0]]
+        // set start time to be 8am on the following day from last point.
+        if (path.features.length) {
+          const myp = path.features[path.features.length - 1].properties.endTime
+          if (myp) {
+            const lastTime = $moment(myp, 'YYYY-MM-DD h:mm A')
+            const nextMorning = lastTime.add(1, 'days').hours(8).startOf('hour')
+            startTime = nextMorning.format('YYYY-MM-DD h:mm A')
+          }
+        }
       }
     }
-    return { maps, activeMapIndex, geojson: path, startPoint }
+    return { maps, activeMapIndex, geojson: path, startPoint, startTime }
   },
   data () {
     return {
@@ -118,9 +128,9 @@ export default {
       maps: [],
       activeMapIndex: 0,
       startPoint: [],
-      startTime: '',
+      startTime: null,
       endPoint: [],
-      endTime: '',
+      endTime: null,
       geojson: {
         type: 'FeatureCollection',
         features: []
@@ -140,6 +150,7 @@ export default {
   },
   methods: {
     async createNewMap () {
+      // TODO : Restrict map creation only after previous map has data
       const advIndex = this.$store.state.editor.activeAdvIndex
       const advId = this.$store.state.editor.adventures[advIndex].id
       const newMap = {
@@ -152,16 +163,22 @@ export default {
       // clear name field
       this.newMapName = ''
       this.activeMapIndex = this.maps.length - 1
-      // clear time
-      this.startTime = ''
-      this.endTime = ''
+      // set start time to be 8am on the day after last endTime
+      let myTempTime = null
+      if (this.geojson.features.length) {
+        const lastTime = this.geojson.features[this.geojson.features.length - 1].properties.endTime
+        const tmp = this.$moment(lastTime, 'YYYY-MM-DD h:mm A').startOf('day').add(1, 'days').hours(8).startOf('hour')
+        myTempTime = tmp.format('YYYY-MM-DD h:mm A')
+      }
+      this.startTime = myTempTime
+      this.endTime = null
       // clear map
       this.geojson = {
         type: 'FeatureCollection',
         features: []
       }
       this.$refs.newSegmentLayer.mapObject.clearLayers()
-      this.$refs.startLayer.mapObject.clearLayers()
+      // this.$refs.startLayer.mapObject.clearLayers()
       this.$refs.endLayer.mapObject.clearLayers()
     },
     async deleteMap (mapId) {
@@ -209,8 +226,16 @@ export default {
     },
     async createNewSegment () {
       const mapId = this.maps[this.activeMapIndex].id
-      const stime = this.$moment(this.startTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
-      const ftime = this.$moment(this.endTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
+      let stime = null
+      let ftime = null
+      if (this.startTime) {
+        stime = this.$moment(this.startTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
+      }
+      if (this.endTime) {
+        ftime = this.$moment(this.endTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
+      }
+      // const stime = this.$moment(this.startTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
+      // const ftime = this.$moment(this.endTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
 
       const newSegment = {
         map: mapId,
@@ -229,19 +254,29 @@ export default {
       // unset endSegment
       this.startPoint = this.endPoint
       this.endPoint = []
-      this.startTime = ''
-      this.endTime = ''
+      // Set Start time to be 8 am on the next day from end time
+      let myTempTime = null
+      if (this.endTime) {
+        const tmp = this.$moment(this.endTime, 'YYYY-MM-DD h:mm A').startOf('day').add(1, 'days').hours(8).startOf('hour')
+        myTempTime = tmp.format('YYYY-MM-DD h:mm A')
+      }
+      this.startTime = myTempTime
+      this.endTime = null
       // draw new startPoint
       const layer = this.$refs.startLayer.mapObject
       this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
     },
     mapClick (event) {
       if (this.maps.length) {
-        if (!this.startPoint.length) {
+        if (!this.startPoint.length) { // if start point is not set, set it
           this.startPoint = [event.latlng.lat, event.latlng.lng]
           const layer = this.$refs.startLayer.mapObject
           this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
-        } else {
+          // if start time is not set, set it to 8 am today
+          if (!this.startTime) {
+            this.startTime = this.$moment().startOf('day').add(8, 'hours').startOf('hour').format('YYYY-MM-DD h:mm A')
+          }
+        } else { // if start point is already set, set end point
           // clear previous
           const layer = this.$refs.endLayer.mapObject
           const segmentLayer = this.$refs.newSegmentLayer.mapObject
@@ -252,6 +287,15 @@ export default {
 
           const segment = [this.startPoint, this.endPoint]
           this.$L.polyline(segment).addTo(segmentLayer)
+
+          // if endTime is not yet set, set it to 8pm on the same day as startTime
+          if (!this.endTime) {
+            if (this.startTime) {
+              const st = this.$moment(this.startTime, 'YYYY-MM-DD h:mm A')
+              const newEndTime = st.startOf('day').add(0, 'days').hours(20).startOf('hour')
+              this.endTime = newEndTime.format('YYYY-MM-DD h:mm A')
+            }
+          }
         }
       }
     },
