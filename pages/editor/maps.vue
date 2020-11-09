@@ -51,7 +51,7 @@
           >
             Start Set
             <div>
-              <VueCtkDateTimePicker v-model="startTime" />
+              <VueCtkDateTimePicker v-model="startTime" position="top" />
             </div>
           </div>
           <div
@@ -62,6 +62,7 @@
               <VueCtkDateTimePicker v-model="endTime" />
             </div>
           </div>
+          Segment Distance: {{ (segmentDistance/1000).toFixed(1) }} km
           <button
             v-if="startPoint.length && endPoint.length"
             class=" flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
@@ -134,7 +135,8 @@ export default {
       geojson: {
         type: 'FeatureCollection',
         features: []
-      }
+      },
+      segmentDistance: 0
     }
   },
   async mounted () {
@@ -180,6 +182,8 @@ export default {
       this.$refs.newSegmentLayer.mapObject.clearLayers()
       // this.$refs.startLayer.mapObject.clearLayers()
       this.$refs.endLayer.mapObject.clearLayers()
+      // TODO: Clear endPoint
+      this.segmentDistance = 0
     },
     async deleteMap (mapId) {
       await this.$axios.$delete('http://localhost:8000/api/rest/maps/' + mapId)
@@ -190,38 +194,49 @@ export default {
         }
       }
     },
-    async setActiveMap (n) {
-      this.activeMapIndex = n
+    async setActiveMap (n) { // this should be renamed to changeActiveMap
+      if (n !== this.activeMapIndex) {
+        this.activeMapIndex = n
 
-      // clear layers
-      this.$refs.newSegmentLayer.mapObject.clearLayers()
-      this.$refs.startLayer.mapObject.clearLayers()
-      this.$refs.endLayer.mapObject.clearLayers()
-      let path = {
-        type: 'FeatureCollection',
-        features: []
-      }
-      let startPoint = []
-
-      const mapId = this.maps[this.activeMapIndex].id
-      path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
-      // set last coordinates as startPoint for new segments
-      if (path.features.length) {
-        const coords = path.features[path.features.length - 1].geometry.coordinates
-        if (coords) {
-          const last = coords[coords.length - 1]
-          startPoint = [last[1], last[0]]
+        // clear layers
+        this.$refs.newSegmentLayer.mapObject.clearLayers()
+        this.$refs.startLayer.mapObject.clearLayers()
+        this.$refs.endLayer.mapObject.clearLayers()
+        let path = {
+          type: 'FeatureCollection',
+          features: []
         }
-      }
-      this.geojson = path
-      this.startPoint = startPoint
-      this.endPoint = []
-      // set map zoom to fit newly loaded geoJSON
-      await this.$nextTick()
-      if (this.startPoint.length) {
-        this.boundMap()
-        const layer = this.$refs.startLayer.mapObject
-        this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
+        let startPoint = []
+
+        const mapId = this.maps[this.activeMapIndex].id
+        path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
+        // set last coordinates as startPoint for new segments
+        let myTempTime = null
+        if (path.features.length) {
+          const coords = path.features[path.features.length - 1].geometry.coordinates
+          if (coords) {
+            const last = coords[coords.length - 1]
+            startPoint = [last[1], last[0]]
+          }
+          const lastTime = path.features[path.features.length - 1].properties.endTime
+          if (lastTime) {
+            const tmp = this.$moment(lastTime, 'YYYY-MM-DD h:mm A').startOf('day').add(1, 'days').hours(8).startOf('hour')
+            myTempTime = tmp.format('YYYY-MM-DD h:mm A')
+          }
+        }
+        this.geojson = path
+        this.startPoint = startPoint
+        this.startTime = myTempTime
+        this.endPoint = []
+        this.segmentDistance = 0
+        this.endTime = null
+        // set map zoom to fit newly loaded geoJSON
+        await this.$nextTick()
+        if (this.startPoint.length) {
+          this.boundMap()
+          const layer = this.$refs.startLayer.mapObject
+          this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
+        }
       }
     },
     async createNewSegment () {
@@ -239,7 +254,7 @@ export default {
 
       const newSegment = {
         map: mapId,
-        distance: 40, // meters
+        distance: this.segmentDistance,
         startTime: stime,
         endTime: ftime,
         waypoints: [this.startPoint, this.endPoint]
@@ -254,6 +269,7 @@ export default {
       // unset endSegment
       this.startPoint = this.endPoint
       this.endPoint = []
+      this.segmentDistance = 0
       // Set Start time to be 8 am on the next day from end time
       let myTempTime = null
       if (this.endTime) {
@@ -296,6 +312,10 @@ export default {
               this.endTime = newEndTime.format('YYYY-MM-DD h:mm A')
             }
           }
+
+          // calculate distance from start to end
+          const dist = this.$refs.myMap.mapObject.distance(this.startPoint, this.endPoint)
+          this.segmentDistance = Math.trunc(dist)
         }
       }
     },
