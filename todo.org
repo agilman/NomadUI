@@ -1,4 +1,4 @@
-** TODO [26/30]
+** TODO [27/30]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -31,7 +31,7 @@
    - [ ] When deleting a map, might have to clearLayers() and unset start and endoint
    - [X] When creating a map, also need to clear layers...
    - [X] Add a datetime picker for segment start and end point.
-   - [ ] Show new segment distance.
+   - [X] Show new segment distance.
    - [X] Set guessed start and end time automatically.
        
 ** BUGS [3/6]
@@ -45,4 +45,5 @@
 ** CSS [0/2]
    - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom
    - [ ] Get datetimepicker to look like the rest of the site.
+   - [ ] Date-time-picker colides with leaflet zoom controls.
 
