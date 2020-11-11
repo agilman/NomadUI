@@ -1,4 +1,4 @@
-** TODO [27/30]
+** TODO [28/33]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -33,6 +33,9 @@
    - [X] Add a datetime picker for segment start and end point.
    - [X] Show new segment distance.
    - [X] Set guessed start and end time automatically.
+   - [X] Add a photo editor page.
+   - [ ] Get photo upload payload from vuex
+   - [ ] Fetch all maps in one request, store in vuex.
        
 ** BUGS [3/6]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure

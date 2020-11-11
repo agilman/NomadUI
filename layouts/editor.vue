@@ -45,6 +45,14 @@
       </div>
       <div
         class="flex items-center mr-6 py-3 text-white"
+        :class="{active: routeName === 'editor-photos'}"
+      >
+        <nuxt-link to="/editor/photos" class="tracking-tight">
+          Photos Editor
+        </nuxt-link>
+      </div>
+      <div
+        class="flex items-center mr-6 py-3 text-white"
         :class="{active: routeName === 'editor-blogs'}"
       >
         <nuxt-link to="/editor/blogs" class="tracking-tight">

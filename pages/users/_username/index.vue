@@ -1,12 +1,12 @@
 <template>
   <div>
     <div id="map-wrap">
-      <no-ssr>
+      <client-only>
         <l-map :zoom="6" :center="[46.9464418,-121.1277591]" style="height:400px">
           <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
           <l-marker :lat-lng="[48.73293,-122.50107]" />
         </l-map>
-      </no-ssr>
+      </client-only>
     </div>
     Hi
   </div>
