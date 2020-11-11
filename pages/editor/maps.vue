@@ -73,7 +73,7 @@
         </div>
       </div>
       <div class="flex w-9/12">
-        <no-ssr>
+        <client-only>
           <l-map ref="myMap" :zoom="6" style="height:475px" @click="mapClick">
             <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
             <l-geo-json ref="pathLayer" :geojson="geojson" />
@@ -81,7 +81,7 @@
             <l-layer-group ref="endLayer" />
             <l-layer-group ref="newSegmentLayer" />
           </l-map>
-        </no-ssr>
+        </client-only>
       </div>
     </div>
   </div>
