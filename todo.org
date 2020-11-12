@@ -38,9 +38,9 @@
    - [X] Fetch all maps in one request, store in vuex.
    - [ ] When deleting currently selected map, reload startpoint afterward from newly selected segment.
        
-** BUGS [4/6]
+** BUGS [5/6]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
-   - [ ] On adventure delete, if current adventure gets moved, need to adjust
+   - [X] On adventure delete, if current adventure gets moved, need to adjust
    - [X] On map delete, also might need to change selected and load and hide layers
    - [X] on map editor page -> init a geojson so that segment creation will be possible for first map
    - [ ] On logout, check the console error about error 404 from backend

@@ -17,14 +17,15 @@ export const mutations = {
     state.adventures.push(adventure)
     state.activeAdvIndex = state.adventures.length - 1
   },
-  removeAdventure (state, advId) {
-    for (let i = 0; i < state.adventures.length; i++) {
-      if (state.adventures[i].id === advId) {
-        state.adventures.splice(i, 1)
-        break
+  removeAdventure (state, delIndex) {
+    if (delIndex <= state.activeAdvIndex) {
+      if (state.adventures.length > 0) {
+        if (state.activeAdvIndex > 0) {
+          state.activeAdvIndex = state.activeAdvIndex - 1
+        }
       }
     }
-    // TODO: change activeAdvIndex wisely...
+    state.adventures.splice(delIndex, 1)
   },
   setActiveAdv (state, index) {
     state.activeAdvIndex = index
