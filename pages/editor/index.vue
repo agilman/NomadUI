@@ -120,6 +120,8 @@ export default {
   },
   methods: {
     setActiveAdv (n) {
+      // unload maps if there are any in store...
+      this.$store.commit('editor/setMaps', [])
       // set in store
       this.$store.commit('editor/setActiveAdv', n)
     },

@@ -90,11 +90,15 @@
 <script>
 export default {
   async asyncData ({ store, $axios, $moment }) {
-    // TODO : Consolidate these 2 axios fetches into a single api point
-    const advId = store.state.editor.adventures[store.state.editor.activeAdvIndex].id
-    const res = await $axios.$get('http://localhost:8000/api/rest/advMaps/' + advId)
-    const maps = res
-    const activeMapIndex = res.length - 1
+    // if maps is not in store... do axios request and save to store
+    if (!store.state.editor.maps.length) {
+      const advId = store.state.editor.adventures[store.state.editor.activeAdvIndex].id
+      const res = await $axios.$get('http://localhost:8000/api/rest/advMaps2/' + advId)
+      store.commit('editor/setMaps', res)
+    }
+    // load from store
+    const maps = store.state.editor.maps
+    let activeMapIndex = 0
     let path = {
       type: 'FeatureCollection',
       features: []
@@ -102,10 +106,9 @@ export default {
     let startPoint = []
     let startTime = null
 
-    if (res.length) {
-      const mapId = maps[activeMapIndex].id
-      path = await $axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
-      // set last coordinates as startPoint for new segments
+    if (maps.length) {
+      activeMapIndex = maps.length - 1
+      path = maps[activeMapIndex].geojson
       if (path.features.length) {
         const coords = path.features[path.features.length - 1].geometry.coordinates
         const last = coords[coords.length - 1]
@@ -121,6 +124,7 @@ export default {
         }
       }
     }
+
     return { maps, activeMapIndex, geojson: path, startPoint, startTime }
   },
   data () {
@@ -161,6 +165,7 @@ export default {
       }
       const response = await this.$axios.$post('http://localhost:8000/api/rest/maps/', newMap)
       this.maps.push(response)
+      // TODO: add new map to store
 
       // clear name field
       this.newMapName = ''
@@ -193,6 +198,7 @@ export default {
           break
         }
       }
+      // TODO: remove map from store
     },
     async setActiveMap (n) { // this should be renamed to changeActiveMap
       if (n !== this.activeMapIndex) {
@@ -208,8 +214,7 @@ export default {
         }
         let startPoint = []
 
-        const mapId = this.maps[this.activeMapIndex].id
-        path = await this.$axios.$get('http://localhost:8000/api/rest/segments/' + mapId)
+        path = this.maps[this.activeMapIndex].geojson
         // set last coordinates as startPoint for new segments
         let myTempTime = null
         if (path.features.length) {
@@ -249,8 +254,6 @@ export default {
       if (this.endTime) {
         ftime = this.$moment(this.endTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
       }
-      // const stime = this.$moment(this.startTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
-      // const ftime = this.$moment(this.endTime.toUpperCase(), ['YYYY-MM-DD h:mm A']).format()
 
       const newSegment = {
         map: mapId,
@@ -262,6 +265,7 @@ export default {
 
       const response = await this.$axios.$post('http://localhost:8000/api/rest/segments/' + mapId, newSegment)
       this.geojson.features.push(response)
+      // TODO: add to store
       // clear layers...
       this.$refs.startLayer.mapObject.clearLayers()
       this.$refs.endLayer.mapObject.clearLayers()
