@@ -91,61 +91,65 @@
 export default {
   async asyncData ({ store, $axios, $moment }) {
     // if maps is not in store... do axios request and save to store
+    let startPoint = []
+    let startTime = null
+
     if (!store.state.editor.maps.length) {
       const advId = store.state.editor.adventures[store.state.editor.activeAdvIndex].id
       const res = await $axios.$get('http://localhost:8000/api/rest/advMaps2/' + advId)
       store.commit('editor/setMaps', res)
-    }
-    // load from store
-    const maps = store.state.editor.maps
-    let activeMapIndex = 0
-    let path = {
-      type: 'FeatureCollection',
-      features: []
-    }
-    let startPoint = []
-    let startTime = null
-
-    if (maps.length) {
-      activeMapIndex = maps.length - 1
-      path = maps[activeMapIndex].geojson
-      if (path.features.length) {
-        const coords = path.features[path.features.length - 1].geometry.coordinates
-        const last = coords[coords.length - 1]
-        startPoint = [last[1], last[0]]
-        // set start time to be 8am on the following day from last point.
-        if (path.features.length) {
-          const myp = path.features[path.features.length - 1].properties.endTime
-          if (myp) {
-            const lastTime = $moment(myp, 'YYYY-MM-DD h:mm A')
-            const nextMorning = lastTime.add(1, 'days').hours(8).startOf('hour')
-            startTime = nextMorning.format('YYYY-MM-DD h:mm A')
-          }
-        }
+      if (res.length) {
+        store.commit('editor/setActiveMap', res.length - 1)
       }
     }
+    // load startPoint and startTime from .
+    const path = store.state.editor.maps[store.state.editor.activeMapIndex].geojson
+    if (path.features.length) {
+      const coords = path.features[path.features.length - 1].geometry.coordinates
+      const last = coords[coords.length - 1]
+      startPoint = [last[1], last[0]]
 
-    return { maps, activeMapIndex, geojson: path, startPoint, startTime }
+      // set start time to be 8am on the following day from last point.
+      const lastTime = path.features[path.features.length - 1].properties.endTime
+      if (lastTime) {
+        const lastTimeL = $moment(lastTime, 'YYYY-MM-DD h:mm A')
+        const nextMorning = lastTimeL.add(1, 'days').hours(8).startOf('hour')
+        startTime = nextMorning.format('YYYY-MM-DD h:mm A')
+      }
+    }
+    return { startPoint, startTime }
   },
   data () {
     return {
       newMapName: '',
-      maps: [],
-      activeMapIndex: 0,
       startPoint: [],
       startTime: null,
       endPoint: [],
       endTime: null,
-      geojson: {
+      segmentDistance: 0
+    }
+  },
+  computed: {
+    maps () {
+      return this.$store.state.editor.maps
+    },
+    activeMapIndex () {
+      return this.$store.state.editor.activeMapIndex
+    },
+    geojson () {
+      let tmp = {
         type: 'FeatureCollection',
         features: []
-      },
-      segmentDistance: 0
+      }
+      if (this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].geojson) {
+        tmp = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].geojson
+      }
+      return tmp
     }
   },
   async mounted () {
     await this.$nextTick()
-    if (this.startPoint.length) {
+    if (this.geojson.features.length) {
       this.boundMap()
       const layer = this.$refs.startLayer.mapObject
       this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
@@ -201,8 +205,8 @@ export default {
       // TODO: remove map from store
     },
     async setActiveMap (n) { // this should be renamed to changeActiveMap
-      if (n !== this.activeMapIndex) {
-        this.activeMapIndex = n
+      if (n !== this.$store.state.editor.activeMapIndexx) {
+        this.$store.commit('editor/setActiveMap', n)
 
         // clear layers
         this.$refs.newSegmentLayer.mapObject.clearLayers()
@@ -229,7 +233,6 @@ export default {
             myTempTime = tmp.format('YYYY-MM-DD h:mm A')
           }
         }
-        this.geojson = path
         this.startPoint = startPoint
         this.startTime = myTempTime
         this.endPoint = []
@@ -264,8 +267,7 @@ export default {
       }
 
       const response = await this.$axios.$post('http://localhost:8000/api/rest/segments/' + mapId, newSegment)
-      this.geojson.features.push(response)
-      // TODO: add to store
+      this.$store.commit('editor/addSegment', response)
       // clear layers...
       this.$refs.startLayer.mapObject.clearLayers()
       this.$refs.endLayer.mapObject.clearLayers()
