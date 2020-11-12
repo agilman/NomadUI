@@ -18,7 +18,7 @@
               <span>
                 <button
                   class="border rounded py-2 px-2 hover:shadow-outline"
-                  @click="deleteAdv(adv.id)"
+                  @click="deleteAdv(adv.id, index)"
                   @click.stop
                 >
                   delete
@@ -143,10 +143,9 @@ export default {
       this.advType = 1
       this.advStatus = 1
     },
-    async deleteAdv (advId) {
+    async deleteAdv (advId, advIndex) {
       await this.$axios.$delete('http://localhost:8000/api/rest/adventures/' + advId)
-      // TODO this should be done in a then() clause wtih exception handling...
-      this.$store.commit('editor/removeAdventure', advId)
+      this.$store.commit('editor/removeAdventure', advIndex)
     }
   },
   layout: 'editor'
