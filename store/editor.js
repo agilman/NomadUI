@@ -32,6 +32,18 @@ export const mutations = {
   setMaps (state, maps) {
     state.maps = [...maps]
   },
+  addMap (state, map) {
+    state.maps.push(map)
+    state.activeMapIndex = state.maps.length - 1
+  },
+  removeMap (state, mapId) {
+    for (let i = 0; i < state.maps.length; i++) {
+      if (state.maps[i].id === mapId) {
+        state.maps.splice(i, 1)
+        break
+      }
+    }
+  },
   setActiveMap (state, index) {
     state.activeMapIndex = index
   },

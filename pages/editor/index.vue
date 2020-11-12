@@ -135,6 +135,9 @@ export default {
       const response = await this.$axios.$post('http://localhost:8000/api/rest/adventures/', newAdv)
       // Add new data to adventure list
       this.$store.commit('editor/addAdventure', response)
+      // clear maps from Store
+      this.$store.commit('editor/setMaps', [])
+      this.$store.commit('editor/setActiveMap', 0)
       // reset adventure creation options
       this.advName = ''
       this.advType = 1

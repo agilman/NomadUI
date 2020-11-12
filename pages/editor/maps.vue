@@ -102,19 +102,22 @@ export default {
         store.commit('editor/setActiveMap', res.length - 1)
       }
     }
-    // load startPoint and startTime from .
-    const path = store.state.editor.maps[store.state.editor.activeMapIndex].geojson
-    if (path.features.length) {
-      const coords = path.features[path.features.length - 1].geometry.coordinates
-      const last = coords[coords.length - 1]
-      startPoint = [last[1], last[0]]
 
-      // set start time to be 8am on the following day from last point.
-      const lastTime = path.features[path.features.length - 1].properties.endTime
-      if (lastTime) {
-        const lastTimeL = $moment(lastTime, 'YYYY-MM-DD h:mm A')
-        const nextMorning = lastTimeL.add(1, 'days').hours(8).startOf('hour')
-        startTime = nextMorning.format('YYYY-MM-DD h:mm A')
+    if (store.state.editor.maps.length) {
+      // load startPoint and startTime from
+      const path = store.state.editor.maps[store.state.editor.activeMapIndex].geojson
+      if (path.features.length) {
+        const coords = path.features[path.features.length - 1].geometry.coordinates
+        const last = coords[coords.length - 1]
+        startPoint = [last[1], last[0]]
+
+        // set start time to be 8am on the following day from last point.
+        const lastTime = path.features[path.features.length - 1].properties.endTime
+        if (lastTime) {
+          const lastTimeL = $moment(lastTime, 'YYYY-MM-DD h:mm A')
+          const nextMorning = lastTimeL.add(1, 'days').hours(8).startOf('hour')
+          startTime = nextMorning.format('YYYY-MM-DD h:mm A')
+        }
       }
     }
     return { startPoint, startTime }
@@ -141,7 +144,7 @@ export default {
         type: 'FeatureCollection',
         features: []
       }
-      if (this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].geojson) {
+      if (this.$store.state.editor.maps.length) {
         tmp = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].geojson
       }
       return tmp
@@ -168,44 +171,36 @@ export default {
         name: this.newMapName
       }
       const response = await this.$axios.$post('http://localhost:8000/api/rest/maps/', newMap)
-      this.maps.push(response)
-      // TODO: add new map to store
+      this.$store.commit('editor/addMap', response)
 
       // clear name field
       this.newMapName = ''
-      this.activeMapIndex = this.maps.length - 1
       // set start time to be 8am on the day after last endTime
       let myTempTime = null
-      if (this.geojson.features.length) {
-        const lastTime = this.geojson.features[this.geojson.features.length - 1].properties.endTime
-        const tmp = this.$moment(lastTime, 'YYYY-MM-DD h:mm A').startOf('day').add(1, 'days').hours(8).startOf('hour')
-        myTempTime = tmp.format('YYYY-MM-DD h:mm A')
+
+      // get last timestamp from previous map in store
+      if (this.$store.state.editor.maps.length > 1) {
+        const previousMap = this.$store.state.editor.maps[this.$store.state.editor.maps.length - 2]
+
+        if (previousMap.geojson.features.length) {
+          const lastTime = previousMap.geojson.features[previousMap.geojson.features.length - 1].properties.endTime
+          const tmp = this.$moment(lastTime, 'YYYY-MM-DD h:mm A').startOf('day').add(1, 'days').hours(8).startOf('hour')
+          myTempTime = tmp.format('YYYY-MM-DD h:mm A')
+        }
       }
       this.startTime = myTempTime
       this.endTime = null
-      // clear map
-      this.geojson = {
-        type: 'FeatureCollection',
-        features: []
-      }
+
       this.$refs.newSegmentLayer.mapObject.clearLayers()
-      // this.$refs.startLayer.mapObject.clearLayers()
       this.$refs.endLayer.mapObject.clearLayers()
-      // TODO: Clear endPoint
       this.segmentDistance = 0
     },
     async deleteMap (mapId) {
       await this.$axios.$delete('http://localhost:8000/api/rest/maps/' + mapId)
-      for (let i = 0; i < this.maps.length; i++) {
-        if (this.maps[i].id === mapId) {
-          this.maps.splice(i, 1)
-          break
-        }
-      }
-      // TODO: remove map from store
+      this.$store.commit('editor/removeMap', mapId)
     },
     async setActiveMap (n) { // this should be renamed to changeActiveMap
-      if (n !== this.$store.state.editor.activeMapIndexx) {
+      if (n !== this.$store.state.editor.activeMapIndex) {
         this.$store.commit('editor/setActiveMap', n)
 
         // clear layers
