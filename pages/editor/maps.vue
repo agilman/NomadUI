@@ -18,7 +18,7 @@
               <span>
                 <button
                   class="flex border rounded py-2 px-2 hover:shadow-outline"
-                  @click="deleteMap(map.id)"
+                  @click="deleteMap(map.id, index)"
                   @click.stop
                 >
                   delete
@@ -195,9 +195,20 @@ export default {
       this.$refs.endLayer.mapObject.clearLayers()
       this.segmentDistance = 0
     },
-    async deleteMap (mapId) {
+    async deleteMap (mapId, delIndex) {
       await this.$axios.$delete('http://localhost:8000/api/rest/maps/' + mapId)
-      this.$store.commit('editor/removeMap', mapId)
+      // if deleting currently selected
+      if (this.$store.state.editor.activeMapIndex === delIndex) {
+        this.$refs.startLayer.mapObject.clearLayers()
+        // unset startTime, endtime
+        this.startPoint = []
+        this.startTime = null
+        this.endPoint = []
+        this.endTime = null
+        this.segmentDistance = 0
+        // TODO: set start
+      }
+      this.$store.commit('editor/removeMap', delIndex)
     },
     async setActiveMap (n) { // this should be renamed to changeActiveMap
       if (n !== this.$store.state.editor.activeMapIndex) {

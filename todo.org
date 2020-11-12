@@ -1,4 +1,4 @@
-** TODO [30/33]
+** TODO [31/34]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -28,7 +28,7 @@
    - [X] Hide segment creation if there is no map  created.
    - [X] Disable segment drawing if there is no map selected.
    - [X] Center map on meaningful location if there is no maps with coordinates...
-   - [ ] When deleting a map, might have to clearLayers() and unset start and endoint
+   - [X] When deleting a map, might have to clearLayers() and unset start and endoint
    - [X] When creating a map, also need to clear layers...
    - [X] Add a datetime picker for segment start and end point.
    - [X] Show new segment distance.
@@ -36,17 +36,19 @@
    - [X] Add a photo editor page.
    - [ ] Get photo upload payload from vuex
    - [X] Fetch all maps in one request, store in vuex.
+   - [ ] When deleting currently selected map, reload startpoint afterward from newly selected segment.
        
-** BUGS [3/6]
+** BUGS [4/6]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [ ] On adventure delete, if current adventure gets moved, need to adjust
-   - [ ] On map delete, also might need to change selected and load and hide layers
+   - [X] On map delete, also might need to change selected and load and hide layers
    - [X] on map editor page -> init a geojson so that segment creation will be possible for first map
    - [ ] On logout, check the console error about error 404 from backend
    - [X] map editor fails to load when there are no coordinates in the map.
 
-** CSS [0/2]
+** CSS [0/3]
    - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom
    - [ ] Get datetimepicker to look like the rest of the site.
    - [ ] Date-time-picker colides with leaflet zoom controls.
+   - [ ] Hide map when there are no maps.
 
