@@ -2,7 +2,9 @@
 
 export const state = () => ({
   adventures: [],
-  activeAdvIndex: 0
+  activeAdvIndex: 0,
+  maps: [],
+  activeMapIndex: 0
 })
 
 export const mutations = {
@@ -26,5 +28,8 @@ export const mutations = {
   },
   setActiveAdv (state, index) {
     state.activeAdvIndex = index
+  },
+  setMaps (state, maps) {
+    state.maps = [...maps]
   }
 }
