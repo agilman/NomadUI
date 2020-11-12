@@ -31,5 +31,11 @@ export const mutations = {
   },
   setMaps (state, maps) {
     state.maps = [...maps]
+  },
+  setActiveMap (state, index) {
+    state.activeMapIndex = index
+  },
+  addSegment (state, segment) {
+    state.maps[state.activeMapIndex].geojson.features.push(segment)
   }
 }
