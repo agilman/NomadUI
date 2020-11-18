@@ -167,6 +167,7 @@ export default {
       const advIndex = this.$store.state.editor.activeAdvIndex
       const advId = this.$store.state.editor.adventures[advIndex].id
       const newMap = {
+        user: this.$store.state.user.user_id,
         adv: advId,
         name: this.newMapName
       }

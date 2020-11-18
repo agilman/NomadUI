@@ -37,6 +37,8 @@
    - [ ] Get photo upload payload from vuex
    - [X] Fetch all maps in one request, store in vuex.
    - [ ] When deleting currently selected map, reload startpoint afterward from newly selected segment.
+   - [ ] Create nicer looking login and registration pages.
+   - [ ] Create a lotout button.
        
 ** BUGS [5/6]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
