@@ -18,6 +18,8 @@
     "leaflet": "^1.7.1",
     "nuxt": "^2.14.7",
     "nuxt-leaflet": "0.0.21",
+    "swiper": "^6.3.5",
+    "vue-awesome-swiper": "^4.1.1",
     "vue-ctk-date-time-picker": "^2.5.0"
   },
   "devDependencies": {
