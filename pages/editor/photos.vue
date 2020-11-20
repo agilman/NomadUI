@@ -22,11 +22,42 @@
       </button>
       <input ref="imgUpload" hidden type="file" accept="image/jpeg" @change="onFileChange">
     </div>
+    <div>
+      {{ photos.length }} Images
+    </div>
+    <div>
+      <swiper ref="mySwiper" :options="swiperOptions">
+        <swiper-slide>Slide 1</swiper-slide>
+        <swiper-slide>Slide 2</swiper-slide>
+        <swiper-slide>Slide 3</swiper-slide>
+        <swiper-slide>Slide 4</swiper-slide>
+        <swiper-slide>Slide 5</swiper-slide>
+        <div slot="pagination" class="swiper-pagination" />
+      </swiper>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  async asyncData ({ store, $axios }) {
+    const mid = store.state.editor.maps[store.state.editor.activeMapIndex].id
+    const apiPath = '/api/rest/photos/' + mid
+
+    const results = await $axios.get(apiPath)
+    const photos = results.data
+    return { photos }
+  },
+  data () {
+    return {
+      photos: [],
+      swiperOptions: {
+        pagination: {
+          el: '.swiper-pagination'
+        }
+      }
+    }
+  },
   computed: {
     maps () {
       return this.$store.state.editor.maps
@@ -36,7 +67,7 @@ export default {
     }
   },
   methods: {
-    onFileChange (e) {
+    async onFileChange (e) {
       const files = e.target.files
 
       for (let i = 0; i < files.length; i++) {
@@ -49,15 +80,13 @@ export default {
         const mapId = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].id
         fd.append('mapId', mapId)
 
-        this.$axios.post('http://localhost:8000/api/rest/photos/photoUpload',
+        const photo = await this.$axios.post('http://localhost:8000/api/rest/photos/photoUpload',
           fd, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
-          }).then(function (retData) {
-          console.log('SUCCESS!!')
-          console.log(retData)
-        })
+          })
+        this.photos.push(photo.data)
       }
     }
   },

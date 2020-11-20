@@ -35,7 +35,8 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-     { src: '~/plugins/vuejs-datepicker', ssr: false },
+     { src: '~/plugins/vuejs-datepicker.js', ssr: false },
+     { src: '~/plugins/vue-awesome-swiper.js', mode: 'client' }
   ],
   /*
   ** Auto import components

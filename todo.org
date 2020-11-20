@@ -1,4 +1,4 @@
-** TODO [31/34]
+** TODO [31/37]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -39,14 +39,16 @@
    - [ ] When deleting currently selected map, reload startpoint afterward from newly selected segment.
    - [ ] Create nicer looking login and registration pages.
    - [ ] Create a lotout button.
-       
-** BUGS [5/6]
+   - [ ] Let the user know that a map must be created before photos can be uploaded.
+
+** BUGS [5/7]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [X] On adventure delete, if current adventure gets moved, need to adjust
    - [X] On map delete, also might need to change selected and load and hide layers
    - [X] on map editor page -> init a geojson so that segment creation will be possible for first map
    - [ ] On logout, check the console error about error 404 from backend
    - [X] map editor fails to load when there are no coordinates in the map.
+   - [ ] Assign maps and activeMapIndex at the time when adventures are loaded... this way I can visit photo editor without having to go to map editor first.
 
 ** CSS [0/3]
    - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom
