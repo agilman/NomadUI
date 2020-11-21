@@ -1,37 +1,39 @@
 <template>
   <div>
     <div>
-      <h1>Maps:</h1>
-      <div class="flex-row my-2 mx-2">
+      <div class="flex-row px-1 py-1">
+        <span>Maps:</span>
         <span
           v-for="(map, index) in maps"
           :key="map.id"
           :class="{active: index == activeMapIndex}"
-          class="border rounded mr-1 px-2 py-2 hover:font-bold hover:border-2 hover:shadow-outline cursor-pointer"
+          class="border rounded my-1 py-1 px-2 hover:font-bold hover:border-2 hover:shadow-outline cursor-pointer"
         >
           {{ map.name }}
         </span>
       </div>
     </div>
-    <div class="my-5">
-      <button
-        class="flex py-2 px-2 m-2 border rounded bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
-        @click="$refs.imgUpload.click()"
-      >
-        Upload
-      </button>
-      <input ref="imgUpload" hidden type="file" accept="image/jpeg" @change="onFileChange">
+    <div>
+      <div class="mt-1 mb-1">
+        <button
+          class="flex py-1 px-2 mx-2 border rounded bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
+          @click="$refs.imgUpload.click()"
+        >
+          Upload
+        </button>
+        <input ref="imgUpload" hidden type="file" accept="image/jpeg" @change="onFileChange">
+      </div>
     </div>
     <div>
-      {{ photos.length }} Images
+      <div class="mb-1">
+        {{ photos.length }} Images
+      </div>
     </div>
     <div>
       <swiper ref="mySwiper" :options="swiperOptions">
-        <swiper-slide>Slide 1</swiper-slide>
-        <swiper-slide>Slide 2</swiper-slide>
-        <swiper-slide>Slide 3</swiper-slide>
-        <swiper-slide>Slide 4</swiper-slide>
-        <swiper-slide>Slide 5</swiper-slide>
+        <swiper-slide v-for="photo in photos" :key="photo.id">
+          <img :src="makeImgURL(photo.id)"></img>
+        </swiper-slide>
         <div slot="pagination" class="swiper-pagination" />
       </swiper>
     </div>
@@ -41,12 +43,25 @@
 <script>
 export default {
   async asyncData ({ store, $axios }) {
-    const mid = store.state.editor.maps[store.state.editor.activeMapIndex].id
-    const apiPath = '/api/rest/photos/' + mid
+    // if maps is not in store... do axios request and save to store
+    if (!store.state.editor.maps.length) {
+      const advId = store.state.editor.adventures[store.state.editor.activeAdvIndex].id
+      const res = await $axios.$get('http://localhost:8000/api/rest/advMaps2/' + advId)
+      store.commit('editor/setMaps', res)
+      if (res.length) {
+        store.commit('editor/setActiveMap', res.length - 1)
+      }
+    }
+    if (store.state.editor.maps.length) {
+      const mid = store.state.editor.maps[store.state.editor.activeMapIndex].id
+      const apiPath = '/api/rest/photos/' + mid
 
-    const results = await $axios.get(apiPath)
-    const photos = results.data
-    return { photos }
+      const results = await $axios.get(apiPath)
+      const photos = results.data
+      return { photos }
+    } else {
+      return { photos: [] }
+    }
   },
   data () {
     return {
@@ -87,6 +102,17 @@ export default {
             }
           })
         this.photos.push(photo.data)
+      }
+    },
+    makeImgURL (pid) {
+      const uid = this.$store.state.user.user_id
+      const aid = this.$store.state.editor.adventures[this.$store.state.editor.activeAdvIndex].id
+      if (this.$store.state.editor.maps.length) {
+        const mid = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].id
+        const url = 'http://localhost:8000/user_media/' + uid + '/' + aid + '/' + mid + '/.th/' + pid + '.jpg'
+        return url
+      } else {
+        return ''
       }
     }
   },

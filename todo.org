@@ -41,14 +41,15 @@
    - [ ] Create a lotout button.
    - [ ] Let the user know that a map must be created before photos can be uploaded.
 
-** BUGS [5/7]
+** BUGS [7/8]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [X] On adventure delete, if current adventure gets moved, need to adjust
    - [X] On map delete, also might need to change selected and load and hide layers
    - [X] on map editor page -> init a geojson so that segment creation will be possible for first map
+   - [X] On adventure select change -> clean map selection.
+   - [X] On photo editor page -> in asyncdata -> if there is no maps in store, load them and select latest.
    - [ ] On logout, check the console error about error 404 from backend
    - [X] map editor fails to load when there are no coordinates in the map.
-   - [ ] Assign maps and activeMapIndex at the time when adventures are loaded... this way I can visit photo editor without having to go to map editor first.
 
 ** CSS [0/3]
    - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom
