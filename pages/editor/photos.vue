@@ -8,6 +8,7 @@
           :key="map.id"
           :class="{active: index == activeMapIndex}"
           class="border rounded my-1 py-1 px-2 hover:font-bold hover:border-2 hover:shadow-outline cursor-pointer"
+          @click="setActiveMap(index)"
         >
           {{ map.name }}
         </span>
@@ -25,17 +26,19 @@
       </div>
     </div>
     <div>
-      <div class="mb-1">
+      <div class="mb-1 px-1">
         {{ photos.length }} Images
       </div>
     </div>
     <div>
-      <swiper ref="mySwiper" :options="swiperOptions">
-        <swiper-slide v-for="photo in photos" :key="photo.id">
-          <img :src="makeImgURL(photo.id)"></img>
-        </swiper-slide>
-        <div slot="pagination" class="swiper-pagination" />
-      </swiper>
+      <div class="px-1">
+        <swiper ref="mySwiper" :options="swiperOptions">
+          <swiper-slide v-for="photo in photos" :key="photo.id">
+            <img :src="makeImgURL(photo.id)"></img>
+          </swiper-slide>
+          <div slot="pagination" class="swiper-pagination" />
+        </swiper>
+      </div>
     </div>
   </div>
 </template>
@@ -67,8 +70,11 @@ export default {
     return {
       photos: [],
       swiperOptions: {
+        slidesPerView: 7,
+        spaceBetween: 20,
         pagination: {
-          el: '.swiper-pagination'
+          el: '.swiper-pagination',
+          clickable: true
         }
       }
     }
@@ -102,6 +108,21 @@ export default {
             }
           })
         this.photos.push(photo.data)
+      }
+    },
+    async setActiveMap (index) {
+      if (index !== this.$store.state.editor.activeMapIndex) {
+        this.$store.commit('editor/setActiveMap', index)
+
+        // unset photos
+        this.photos = []
+
+        // fetch data for newly selected maps
+        const mid = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].id
+        const apiPath = '/api/rest/photos/' + mid
+
+        const results = await this.$axios.get(apiPath)
+        this.photos = results.data
       }
     },
     makeImgURL (pid) {

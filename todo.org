@@ -38,7 +38,7 @@
    - [X] Fetch all maps in one request, store in vuex.
    - [ ] When deleting currently selected map, reload startpoint afterward from newly selected segment.
    - [ ] Create nicer looking login and registration pages.
-   - [ ] Create a lotout button.
+   - [ ] Create a logout button.
    - [ ] Let the user know that a map must be created before photos can be uploaded.
 
 ** BUGS [7/8]
