@@ -33,12 +33,25 @@
     <div>
       <div class="px-1">
         <swiper ref="mySwiper" :options="swiperOptions">
-          <swiper-slide v-for="photo in photos" :key="photo.id">
-            <img :src="makeImgURL(photo.id)"></img>
+          <swiper-slide v-for="photo in photos" :key="photo.id" class="border rounded p-2 shadow !important bg-teal-100" :class="[selectedImgs.includes(photo.id) ? 'selectedImg': '']">
+            <img :src="makeImgURL(photo.id)" @click="imgClick(photo.id)"></img>
           </swiper-slide>
           <div slot="pagination" class="swiper-pagination" />
         </swiper>
       </div>
+    </div>
+    <div>
+      <button class="border rounded mb-1 mx-1 px-1 py-1 bg-teal-300">
+        Save Geotag
+      </button>
+    </div>
+    <div class="flex">
+      <client-only>
+        <l-map ref="myMap" :zoom="6" style="height:275px" @click="mapClick">
+          <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+          <l-layer-group ref="newGeotagLayer" />
+        </l-map>
+      </client-only>
     </div>
   </div>
 </template>
@@ -69,6 +82,7 @@ export default {
   data () {
     return {
       photos: [],
+      selectedImgs: [],
       swiperOptions: {
         slidesPerView: 7,
         spaceBetween: 20,
@@ -135,6 +149,23 @@ export default {
       } else {
         return ''
       }
+    },
+    mapClick (event) {
+      const newlayer = this.$refs.newGeotagLayer.mapObject
+      // clear previous tag ...
+      newlayer.clearLayers()
+
+      // add new marker
+      const newTag = [event.latlng.lat, event.latlng.lng]
+
+      this.$L.circle(newTag, { radius: 100, color: 'green' }).addTo(newlayer)
+    },
+    imgClick (imgId) {
+      if (this.selectedImgs.includes(imgId)) {
+        this.selectedImgs.pop(imgId)
+      } else {
+        this.selectedImgs.push(imgId)
+      }
     }
   },
   layout: 'editor'
@@ -144,5 +175,9 @@ export default {
 <style>
 .active{
   @apply bg-teal-600;
+}
+.selectedImg{
+  @apply !important;
+  @apply bg-teal-400;
 }
 </style>
