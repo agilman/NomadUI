@@ -1,29 +1,41 @@
 <template>
-  <section class="registration">
-    <h2
-      class="title"
-    >
-      Register
-    </h2>
-    <div>
-      <label for="username">nick</label>
-      <input id="username" v-model="user.username" type="text">user</input>
-
-      <label for="email">e-mail</label>
-      <input id="email" v-model="user.email" type="text">email</input>
-
-      <label for="password1">Password</label>
-      <input id="password" v-model="user.password1" type="password">password</input>
-      <label for="password2">Confirm Password</label>
-      <input id="password2" v-model="user.password2" type="password">confirm password</input>
-      <button
-        class="is-primary"
-        @click="register"
-      >
-        Register!
-      </button>
+  <div class="flex justify-center">
+    <div class="block w-2/5 mx-4 mb-4 mt-1 bg-white shadow rounded px-8 pt-6 pb-8 flex flex-col">
+      <Logo />
+      <div class="mb-4">
+        <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
+          Username
+        </label>
+        <input id="user" v-model="user.username" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker hover:border-2 hover:shadow-outline" type="text" placeholder="Username">
+      </div>
+      <div class="mb-4">
+        <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
+          e-mail
+        </label>
+        <input id="user" v-model="user.email" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker hover:border-2 hover:shadow-outline" type="text" placeholder="Username">
+      </div>
+      <div class="mb-6">
+        <label class="block text-grey-darker text-sm font-bold mb-2" for="password">
+          Password
+        </label>
+        <input id="password" v-model="user.password1" class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3 hover:border-2 hover:shadow-outline" type="password" placeholder="******************">
+      </div>
+      <div class="mb-6">
+        <label class="block text-grey-darker text-sm font-bold mb-2" for="password">
+          Repeat Password
+        </label>
+        <input id="password" v-model="user.password2" class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3 hover:border-2 hover:shadow-outline" type="password" placeholder="******************">
+      </div>
+      <div class="flex items-center justify-between">
+        <button class="m-1 p-1 rounded border shadow bg-teal-300 hover:font-bold hover:border-2 hover:shadow-outline" type="button" @click="register">
+          Register!
+        </button>
+        <a class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" href="#">
+          Forgot Password?
+        </a>
+      </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -80,7 +92,6 @@ export default {
         this.$store.commit('user/setId', decodedObj.user_id)
         this.$store.commit('user/setUserName', this.user.username)
 
-        // //
         this.$router.push('/')
       } catch (e) {
         console.log(e)
