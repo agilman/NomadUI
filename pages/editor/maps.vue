@@ -75,7 +75,6 @@
       <div class="flex w-9/12">
         <client-only>
           <l-map ref="myMap" :zoom="6" style="height:475px" @click="mapClick">
-            <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
             <l-geo-json ref="pathLayer" :geojson="geojson" />
             <l-layer-group ref="startLayer" />
             <l-layer-group ref="endLayer" />
@@ -152,6 +151,21 @@ export default {
   },
   async mounted () {
     await this.$nextTick()
+    const mymap = this.$refs.myMap.mapObject
+
+    if (this.$store.state.mapbox.accessToken) {
+      this.$L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: this.$store.state.mapbox.accessToken
+      }).addTo(mymap)
+    } else {
+      this.$L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(mymap)
+    }
+
     if (this.geojson.features.length) {
       this.boundMap()
       const layer = this.$refs.startLayer.mapObject
