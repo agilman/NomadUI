@@ -45,7 +45,26 @@
           </button>
         </div>
         <div v-if="maps.length" class="pt-4">
-          <h1>New Segment:</h1>
+          <span>
+            New Segment:
+          </span>
+          <span v-if="mapboxToken != null">
+            <span>
+              <button :class="{active: navType == 1}" class="border rounded my-1 p-2" @click="navType=1">
+                <font-awesome-icon icon="arrow-right" />
+              </button>
+            </span>
+            <span>
+              <button :class="{active: navType == 2}" class="border rounded my-1 p-2" @click="navType=2">
+                <font-awesome-icon icon="bicycle" />
+              </button>
+            </span>
+            <span>
+              <button :class="{active: navType == 3}" class="border rounded my-1 p-2" @click="navType=3">
+                <font-awesome-icon icon="car-side" />
+              </button>
+            </span>
+          </span>
           <div
             :class="isStartSet()"
           >
@@ -128,7 +147,8 @@ export default {
       startTime: null,
       endPoint: [],
       endTime: null,
-      segmentDistance: 0
+      segmentDistance: 0,
+      navType: 1
     }
   },
   computed: {
@@ -147,20 +167,23 @@ export default {
         tmp = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].geojson
       }
       return tmp
+    },
+    mapboxToken () {
+      return this.$store.state.mapbox.accessToken
     }
   },
   async mounted () {
     await this.$nextTick()
     const mymap = this.$refs.myMap.mapObject
 
-    if (this.$store.state.mapbox.accessToken) {
+    if (this.mapboxToken) {
       this.$L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
         id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,
-        accessToken: this.$store.state.mapbox.accessToken
+        accessToken: this.mapboxToken
       }).addTo(mymap)
     } else {
       this.$L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(mymap)

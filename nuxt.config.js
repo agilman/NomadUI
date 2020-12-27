@@ -52,7 +52,8 @@ export default {
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
     // Doc: https://github.com/nuxt-community/moment-module
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    '@nuxtjs/fontawesome'
   ],
   /*
   ** Nuxt.js modules
@@ -98,5 +99,10 @@ export default {
   */
   router: {
     middleware: ['auth']
+  },
+  fontawesome: {
+    icons: {
+      solid: true
+    }
   }
 }

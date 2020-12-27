@@ -1,4 +1,4 @@
-** TODO [32/38]
+** TODO [33/38]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -37,10 +37,11 @@
    - [ ] Get photo upload payload from vuex
    - [X] Fetch all maps in one request, store in vuex.
    - [ ] When deleting currently selected map, reload startpoint afterward from newly selected segment.
-   - [ ] Create nicer looking login and registration pages.
+   - [X] Create nicer looking login and registration pages.
    - [ ] Create a logout button.
    - [ ] Let the user know that a map must be created before photos can be uploaded.
    - [X] Rebase the git repository to amend author.
+   - [ ] Add Navigation Type selection to map editor.
 
 ** BUGS [7/8]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
