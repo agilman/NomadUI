@@ -332,7 +332,7 @@ export default {
       const layer = this.$refs.startLayer.mapObject
       this.$L.circle(this.startPoint, { radius: 100, color: 'green' }).addTo(layer)
     },
-    mapClick (event) {
+    async mapClick (event) {
       if (this.maps.length) {
         if (!this.startPoint.length) { // if start point is not set, set it
           this.startPoint = [event.latlng.lat, event.latlng.lng]
@@ -343,16 +343,32 @@ export default {
             this.startTime = this.$moment().startOf('day').add(8, 'hours').startOf('hour').format('YYYY-MM-DD h:mm A')
           }
         } else { // if start point is already set, set end point
+          this.endPoint = [event.latlng.lat, event.latlng.lng]
           // clear previous
           const layer = this.$refs.endLayer.mapObject
           const segmentLayer = this.$refs.newSegmentLayer.mapObject
           layer.clearLayers()
           segmentLayer.clearLayers()
-          this.endPoint = [event.latlng.lat, event.latlng.lng]
-          this.$L.circle(this.endPoint, { radius: 100, color: 'red' }).addTo(layer)
 
-          const segment = [this.startPoint, this.endPoint]
-          this.$L.polyline(segment).addTo(segmentLayer)
+          // TODO: get segment depending on nav navType
+          if (this.navType === 1) {
+            const segment = [this.startPoint, this.endPoint]
+            this.$L.polyline(segment).addTo(segmentLayer)
+          }
+          if (this.navType === 3) {
+            const s1lat = this.startPoint[1]
+            const s1lng = this.startPoint[0]
+            const s2lat = this.endPoint[1]
+            const s2lng = this.endPoint[0]
+            const waypoints = s1lat.toString() + ',' + s1lng.toString() + ';' + s2lat.toString() + ',' + s2lng.toString()
+
+            const mburl = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + waypoints + '?access_token=' + this.$store.state.mapbox.accessToken
+            const navSegment = await this.$axios.get(mburl)
+
+            console.log(navSegment)
+          }
+
+          this.$L.circle(this.endPoint, { radius: 100, color: 'red' }).addTo(layer)
 
           // if endTime is not yet set, set it to 8pm on the same day as startTime
           if (!this.endTime) {
