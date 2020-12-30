@@ -13,6 +13,7 @@
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@mapbox/polyline": "^1.1.1",
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.12.4",
     "@nuxtjs/fontawesome": "^1.1.2",

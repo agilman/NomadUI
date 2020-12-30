@@ -106,6 +106,7 @@
 </template>
 
 <script>
+const polyline = require('@mapbox/polyline')
 export default {
   async asyncData ({ store, $axios, $moment }) {
     // if maps is not in store... do axios request and save to store
@@ -351,11 +352,22 @@ export default {
           segmentLayer.clearLayers()
 
           // TODO: get segment depending on nav navType
+          let segment = []
           if (this.navType === 1) {
-            const segment = [this.startPoint, this.endPoint]
-            this.$L.polyline(segment).addTo(segmentLayer)
-          }
-          if (this.navType === 3) {
+            segment = [this.startPoint, this.endPoint]
+          } else if (this.navType === 2) {
+            const s1lat = this.startPoint[1]
+            const s1lng = this.startPoint[0]
+            const s2lat = this.endPoint[1]
+            const s2lng = this.endPoint[0]
+            const waypoints = s1lat.toString() + ',' + s1lng.toString() + ';' + s2lat.toString() + ',' + s2lng.toString()
+
+            const mburl = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + waypoints + '?access_token=' + this.$store.state.mapbox.accessToken
+            const response = await this.$axios.get(mburl)
+
+            const encodedPolyline = response.data.routes[0].geometry
+            segment = polyline.decode(encodedPolyline)
+          } else if (this.navType === 3) {
             const s1lat = this.startPoint[1]
             const s1lng = this.startPoint[0]
             const s2lat = this.endPoint[1]
@@ -363,11 +375,13 @@ export default {
             const waypoints = s1lat.toString() + ',' + s1lng.toString() + ';' + s2lat.toString() + ',' + s2lng.toString()
 
             const mburl = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + waypoints + '?access_token=' + this.$store.state.mapbox.accessToken
-            const navSegment = await this.$axios.get(mburl)
+            const response = await this.$axios.get(mburl)
 
-            console.log(navSegment)
+            const encodedPolyline = response.data.routes[0].geometry
+            segment = polyline.decode(encodedPolyline)
           }
 
+          this.$L.polyline(segment).addTo(segmentLayer)
           this.$L.circle(this.endPoint, { radius: 100, color: 'red' }).addTo(layer)
 
           // if endTime is not yet set, set it to 8pm on the same day as startTime
