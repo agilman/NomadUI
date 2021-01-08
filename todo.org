@@ -1,4 +1,4 @@
-** TODO [33/38]
+** TODO [34/39]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -41,9 +41,9 @@
    - [ ] Create a logout button.
    - [ ] Let the user know that a map must be created before photos can be uploaded.
    - [X] Rebase the git repository to amend author.
-   - [ ] Add Navigation Type selection to map editor.
+   - [X] Add Navigation Type selection to map editor.
 
-** BUGS [7/8]
+** BUGS [7/9]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [X] On adventure delete, if current adventure gets moved, need to adjust
    - [X] On map delete, also might need to change selected and load and hide layers
@@ -52,6 +52,7 @@
    - [X] On photo editor page -> in asyncdata -> if there is no maps in store, load them and select latest.
    - [ ] On logout, check the console error about error 404 from backend
    - [X] map editor fails to load when there are no coordinates in the map.
+   - [ ] Calculate total distance of newSegment
 
 ** CSS [0/3]
    - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom

@@ -148,6 +148,7 @@ export default {
       startTime: null,
       endPoint: [],
       endTime: null,
+      newSegment: [],
       segmentDistance: 0,
       navType: 1
     }
@@ -249,7 +250,7 @@ export default {
       }
       this.$store.commit('editor/removeMap', delIndex)
     },
-    async setActiveMap (n) { // this should be renamed to changeActiveMap
+    async setActiveMap (n) {
       if (n !== this.$store.state.editor.activeMapIndex) {
         this.$store.commit('editor/setActiveMap', n)
 
@@ -308,7 +309,7 @@ export default {
         distance: this.segmentDistance,
         startTime: stime,
         endTime: ftime,
-        waypoints: [this.startPoint, this.endPoint]
+        waypoints: this.newSegment
       }
 
       const response = await this.$axios.$post('http://localhost:8000/api/rest/segments/' + mapId, newSegment)
@@ -321,6 +322,7 @@ export default {
       this.startPoint = this.endPoint
       this.endPoint = []
       this.segmentDistance = 0
+      this.newSegment = []
       // Set Start time to be 8 am on the next day from end time
       let myTempTime = null
       if (this.endTime) {
@@ -367,6 +369,9 @@ export default {
 
             const encodedPolyline = response.data.routes[0].geometry
             segment = polyline.decode(encodedPolyline)
+            // add first and last waypoints
+            segment.splice(0, 0, this.startPoint)
+            segment.push(this.endPoint)
           } else if (this.navType === 3) {
             const s1lat = this.startPoint[1]
             const s1lng = this.startPoint[0]
@@ -379,10 +384,14 @@ export default {
 
             const encodedPolyline = response.data.routes[0].geometry
             segment = polyline.decode(encodedPolyline)
+            // add first and last waypoints
+            segment.splice(0, 0, this.startPoint)
+            segment.push(this.endPoint)
           }
 
           this.$L.polyline(segment).addTo(segmentLayer)
           this.$L.circle(this.endPoint, { radius: 100, color: 'red' }).addTo(layer)
+          this.newSegment = segment
 
           // if endTime is not yet set, set it to 8pm on the same day as startTime
           if (!this.endTime) {
@@ -393,7 +402,7 @@ export default {
             }
           }
 
-          // calculate distance from start to end
+          //  TODO : FIX THIS::: calculate distance of segment
           const dist = this.$refs.myMap.mapObject.distance(this.startPoint, this.endPoint)
           this.segmentDistance = Math.trunc(dist)
         }
