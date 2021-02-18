@@ -115,7 +115,7 @@ export default {
 
     if (!store.state.editor.maps.length) {
       const advId = store.state.editor.adventures[store.state.editor.activeAdvIndex].id
-      const res = await $axios.$get('http://localhost:8000/api/rest/advMaps2/' + advId)
+      const res = await $axios.$get('/advMaps2/' + advId)
       store.commit('editor/setMaps', res)
       if (res.length) {
         store.commit('editor/setActiveMap', res.length - 1)
@@ -210,7 +210,7 @@ export default {
         adv: advId,
         name: this.newMapName
       }
-      const response = await this.$axios.$post('http://localhost:8000/api/rest/maps/', newMap)
+      const response = await this.$axios.$post('/maps/', newMap)
       this.$store.commit('editor/addMap', response)
 
       // clear name field
@@ -236,7 +236,7 @@ export default {
       this.segmentDistance = 0
     },
     async deleteMap (mapId, delIndex) {
-      await this.$axios.$delete('http://localhost:8000/api/rest/maps/' + mapId)
+      await this.$axios.$delete('/maps/' + mapId)
       // if deleting currently selected
       if (this.$store.state.editor.activeMapIndex === delIndex) {
         this.$refs.startLayer.mapObject.clearLayers()
@@ -312,7 +312,7 @@ export default {
         waypoints: this.newSegment
       }
 
-      const response = await this.$axios.$post('http://localhost:8000/api/rest/segments/' + mapId, newSegment)
+      const response = await this.$axios.$post('/segments/' + mapId, newSegment)
       this.$store.commit('editor/addSegment', response)
       // clear layers...
       this.$refs.startLayer.mapObject.clearLayers()

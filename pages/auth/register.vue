@@ -64,7 +64,7 @@ export default {
           password: this.user.password1
         }
 
-        const registerResponse = await this.$axios.post('http://127.0.0.1:8000/auth/register/', userData)
+        const registerResponse = await this.$axios.post('/auth/register/', userData)
         if (registerResponse.status === 200) {
           // pass
         }

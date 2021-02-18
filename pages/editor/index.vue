@@ -96,7 +96,7 @@
 export default {
   async fetch () {
     if (!this.$store.state.editor.adventures.length) {
-      const res = await this.$axios.$get('http://localhost:8000/api/rest/me/' + this.$store.state.user.user_id)
+      const res = await this.$axios.$get('/me/' + this.$store.state.user.user_id)
       this.$store.commit('editor/setAdventures', res.adventures)
       this.$store.commit('editor/setActiveAdv', 0)
     } else {
@@ -133,7 +133,7 @@ export default {
         advType: this.advType,
         advStatus: this.advStatus
       }
-      const response = await this.$axios.$post('http://localhost:8000/api/rest/adventures/', newAdv)
+      const response = await this.$axios.$post('/adventures/', newAdv)
       // Add new data to adventure list
       this.$store.commit('editor/addAdventure', response)
       // clear maps from Store
@@ -145,7 +145,7 @@ export default {
       this.advStatus = 1
     },
     async deleteAdv (advId, advIndex) {
-      await this.$axios.$delete('http://localhost:8000/api/rest/adventures/' + advId)
+      await this.$axios.$delete('/adventures/' + advId)
       this.$store.commit('editor/removeAdventure', advIndex)
     }
   },

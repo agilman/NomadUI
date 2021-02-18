@@ -58,7 +58,7 @@ export default {
     // if maps is not in store... do axios request and save to store
     if (!store.state.editor.maps.length) {
       const advId = store.state.editor.adventures[store.state.editor.activeAdvIndex].id
-      const res = await $axios.$get('http://localhost:8000/api/rest/advMaps2/' + advId)
+      const res = await $axios.$get('/advMaps2/' + advId)
       store.commit('editor/setMaps', res)
       if (res.length) {
         store.commit('editor/setActiveMap', res.length - 1)
@@ -66,7 +66,7 @@ export default {
     }
     if (store.state.editor.maps.length) {
       const mid = store.state.editor.maps[store.state.editor.activeMapIndex].id
-      const apiPath = '/api/rest/photos/' + mid
+      const apiPath = '/photos/' + mid
 
       const results = await $axios.get(apiPath)
       const photos = results.data
@@ -147,7 +147,7 @@ export default {
         const mapId = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].id
         fd.append('mapId', mapId)
 
-        const photo = await this.$axios.post('http://localhost:8000/api/rest/photos/photoUpload',
+        const photo = await this.$axios.post('/photos/photoUpload',
           fd, {
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -172,7 +172,7 @@ export default {
 
         // fetch data for newly selected maps
         const mid = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].id
-        const apiPath = '/api/rest/photos/' + mid
+        const apiPath = '/photos/' + mid
 
         const results = await this.$axios.get(apiPath)
         this.photos = results.data
@@ -218,7 +218,7 @@ export default {
         geotag: this.newGeotag
       }
 
-      const response = await this.$axios.post('http://localhost:8000/api/rest/photos/geotag', payload)
+      const response = await this.$axios.post('/photos/geotag', payload)
 
       // clear layer
       this.$refs.newGeotagLayer.mapObject.clearLayers()
