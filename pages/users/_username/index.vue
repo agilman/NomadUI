@@ -15,7 +15,7 @@
 export default {
   async asyncData ({ $axios, params }) {
     const uname = params.username
-    const userData = await $axios.$get('http://localhost:8000/api/rest/user/' + uname)
+    const userData = await $axios.$get('/user/' + uname)
     console.log(userData)
   },
   async mounted () {

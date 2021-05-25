@@ -189,7 +189,8 @@ export default {
       const aid = this.$store.state.editor.adventures[this.$store.state.editor.activeAdvIndex].id
       if (this.$store.state.editor.maps.length) {
         const mid = this.$store.state.editor.maps[this.$store.state.editor.activeMapIndex].id
-        const url = 'http://localhost:8000/user_media/' + uid + '/' + aid + '/' + mid + '/.th/' + pid + '.jpg'
+        const url = process.env.baseUrl + '/user_media/' + uid + '/' + aid + '/' + mid + '/.th/' + pid + '.jpg'
+        console.log(url)
         return url
       } else {
         return ''

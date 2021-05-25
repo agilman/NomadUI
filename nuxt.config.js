@@ -1,5 +1,8 @@
 
 export default {
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:8000'
+  },
   /*
   ** Nuxt rendering mode
   ** See https://nuxtjs.org/api/configuration-mode
