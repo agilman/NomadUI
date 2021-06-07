@@ -1,20 +1,6 @@
 <template>
   <div>
     <div>
-      <div class="flex-row px-1 py-1">
-        <span>Maps:</span>
-        <span
-          v-for="(map, index) in maps"
-          :key="map.id"
-          :class="{active: index == activeMapIndex}"
-          class="border rounded my-1 py-1 px-2 hover:font-bold hover:border-2 hover:shadow-outline cursor-pointer"
-          @click="setActiveMap(index)"
-        >
-          {{ map.name }}
-        </span>
-      </div>
-    </div>
-    <div>
       <div class="mt-1">
         <button
           class="flex py-1 px-2 mx-2 border rounded bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"

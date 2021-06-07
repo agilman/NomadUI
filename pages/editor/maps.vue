@@ -2,48 +2,6 @@
   <div>
     <div class="flex justify-between">
       <div class="flex-grow my-2 mx-3">
-        <div>
-          <h1>Maps:</h1>
-          <div id="mapList" class="flex-col">
-            <div
-              v-for="(map, index) in maps"
-              :key="map.id"
-              :class="{active: index == activeMapIndex}"
-              class="flex border rounded py-2 px-2 mb-1 justify-between cursor-pointer"
-              @click="setActiveMap(index)"
-            >
-              <span class="py-2 px-2">
-                {{ map.name }}
-              </span>
-              <span>
-                <button
-                  class="flex border rounded py-2 px-2 hover:shadow-outline"
-                  @click="deleteMap(map.id, index)"
-                  @click.stop
-                >
-                  delete
-                </button>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h1>New Map:</h1>
-          <input
-            id="mapName"
-            v-model="newMapName"
-            type="text"
-            class="w-full shadow border rounded py-2 px-2 focus:shadow-outline"
-            placeholder="Map Name"
-          ></input>
-          <button
-            v-if="newMapName"
-            class="flex mt-1 w-full border rounded px-2 py-2 bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
-            @click="createNewMap"
-          >
-            Create!
-          </button>
-        </div>
         <div v-if="maps.length" class="pt-4">
           <span>
             New Segment:
@@ -68,7 +26,7 @@
           <div
             :class="isStartSet()"
           >
-            Start Set
+            Segment Start Time
             <div>
               <VueCtkDateTimePicker v-model="startTime" position="top" />
             </div>
@@ -76,7 +34,7 @@
           <div
             :class="isEndSet()"
           >
-            End Set
+            Segment End Time
             <div>
               <VueCtkDateTimePicker v-model="endTime" />
             </div>
@@ -142,6 +100,10 @@ export default {
     return { startPoint, startTime }
   },
   data () {
+    let defaultNavType = 2 // This is for the case that mb token is not provided
+    if (this.$store.state.mapbox.accessToken == null) {
+      defaultNavType = 1
+    }
     return {
       newMapName: '',
       startPoint: [],
@@ -150,7 +112,7 @@ export default {
       endTime: null,
       newSegment: [],
       segmentDistance: 0,
-      navType: 1
+      navType: defaultNavType
     }
   },
   computed: {
@@ -202,6 +164,7 @@ export default {
   },
   methods: {
     async createNewMap () {
+      // This function is deprecated since map creation is done at the same time as adv creation
       // TODO : Restrict map creation only after previous map has data
       const advIndex = this.$store.state.editor.activeAdvIndex
       const advId = this.$store.state.editor.adventures[advIndex].id

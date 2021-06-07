@@ -1,4 +1,4 @@
-** TODO [34/39]
+** TODO [35/44]
    - [X] Create UI for authentication : /auth/login, /auth/register, /auth/logout
    - [X] Create a navigation bar
    - [X] Create a layout for landing page, and for user profile
@@ -42,7 +42,11 @@
    - [ ] Let the user know that a map must be created before photos can be uploaded.
    - [X] Rebase the git repository to amend author.
    - [X] Add Navigation Type selection to map editor.
-
+   - [ ] Move Mapbox token from store to nuxt.config.js / Another idea is to call my own api and hide the mapbox token from the client
+   - [ ] On photo editor page: hide and show geotag marker as needed.
+   - [ ] On Map editor page: Change "start set" and "end set" as titles for segment datetime
+   - [ ] Limit blog photo to photos that have been uploaded to site. 
+   - [X] Create map on adv creation, no need for map creation. only 1 map per adv.
 ** BUGS [7/9]
    - [X] On Adventure delete, stop signal propogation to avoid changing selected adventure
    - [X] On adventure delete, if current adventure gets moved, need to adjust
@@ -54,7 +58,7 @@
    - [X] map editor fails to load when there are no coordinates in the map.
    - [ ] Calculate total distance of newSegment
 
-** CSS [0/3]
+** CSS [0/4]
    - [ ] In editor - on the first nav bar, if adventure editor is active, the highlight doesn't go all the way to top and bottom
    - [ ] Get datetimepicker to look like the rest of the site.
    - [ ] Date-time-picker colides with leaflet zoom controls.
