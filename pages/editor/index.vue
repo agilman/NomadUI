@@ -79,7 +79,7 @@
         <div class="flex-col px-2">
           <div>
             <h1>Profile photo:</h1>
-            <img :src="makeImgUrl()" width="200px" height="350px"></img>
+            <img :src="makeImgUrl()" width="300px" height="350px"></img>
           </div>
           <div>
             <button
@@ -174,8 +174,8 @@ export default {
     },
     makeImgUrl () {
       let url = ''
-      if (!this.profilePhotos.length) {
-        url = '/_nuxt/static/Portrait_Placeholder.png'
+      if (this.profilePhotos.length === 0) {
+        url = '_nuxt/assets/Portrait_Placeholder.png'
       } else {
         const uid = this.$store.state.user.user_id
         url = process.env.baseUrl + '/user_media/' + uid + '/profile_pictures/' + this.profilePhotos[this.profilePhotos.length - 1].id + '.jpg'
