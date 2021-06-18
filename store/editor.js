@@ -4,7 +4,8 @@ export const state = () => ({
   adventures: [],
   activeAdvIndex: 0,
   maps: [],
-  activeMapIndex: 0
+  activeMapIndex: 0,
+  profilePhotos: []
 })
 
 export const mutations = {
@@ -52,5 +53,11 @@ export const mutations = {
   },
   addSegment (state, segment) {
     state.maps[state.activeMapIndex].geojson.features.push(segment)
+  },
+  setProfilePhotos (state, photos) {
+    state.profilePhotos = [...photos]
+  },
+  addProfilePhoto (state, photo) {
+    state.profilePhotos.push(photo)
   }
 }

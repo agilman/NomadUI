@@ -79,12 +79,16 @@
         <div class="flex-col px-2">
           <div>
             <h1>Profile photo:</h1>
-            <img src="~/static/Portrait_Placeholder.png" style="height:150pt"></img>
+            <img :src="makeImgUrl()" width="200px" height="350px"></img>
           </div>
           <div>
-            <button class="flex mt-1 px-2 py-2 w-full border rounded bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline">
+            <button
+              class="flex mt-1 px-2 py-2 w-full border rounded bg-teal-300 font-medium justify-center hover:font-bold hover:border-2 hover:shadow-outline"
+              @click="$refs.imgUpload.click()"
+            >
               Upload Photo
             </button>
+            <input ref="imgUpload" hidden type="file" accept="image/jpeg" @change="onFileChange">
           </div>
         </div> <!-- Right -->
       </div>
@@ -99,6 +103,7 @@ export default {
       const res = await this.$axios.$get('/me/' + this.$store.state.user.user_id)
       this.$store.commit('editor/setAdventures', res.adventures)
       this.$store.commit('editor/setActiveAdv', 0)
+      this.$store.commit('editor/setProfilePhotos', res.profilePhotos)
     } else {
       // pass
     }
@@ -116,6 +121,9 @@ export default {
     },
     activeAdvIndex () {
       return this.$store.state.editor.activeAdvIndex
+    },
+    profilePhotos () {
+      return this.$store.state.editor.profilePhotos
     }
   },
   methods: {
@@ -147,6 +155,32 @@ export default {
     async deleteAdv (advId, advIndex) {
       await this.$axios.$delete('/adventures/' + advId)
       this.$store.commit('editor/removeAdventure', advIndex)
+    },
+    async onFileChange (e) {
+      const files = e.target.files
+
+      const myData = new FormData()
+      myData.append('file', files[0])
+      const uid = this.$store.state.user.user_id
+      myData.append('userId', uid)
+
+      const photo = await this.$axios.post('/photos/profilePhotoUpload',
+        myData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+      this.$store.commit('editor/addProfilePhoto', photo.data)
+    },
+    makeImgUrl () {
+      let url = ''
+      if (!this.profilePhotos.length) {
+        url = '/_nuxt/static/Portrait_Placeholder.png'
+      } else {
+        const uid = this.$store.state.user.user_id
+        url = process.env.baseUrl + '/user_media/' + uid + '/profile_pictures/' + this.profilePhotos[this.profilePhotos.length - 1].id + '.jpg'
+      }
+      return url
     }
   },
   layout: 'editor'
