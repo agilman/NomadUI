@@ -175,7 +175,7 @@ export default {
     makeImgUrl () {
       let url = ''
       if (this.profilePhotos.length === 0) {
-        url = '_nuxt/assets/Portrait_Placeholder.png'
+        url = process.env.baseUrl + '/user_media/Portrait_Placeholder.png'
       } else {
         const uid = this.$store.state.user.user_id
         url = process.env.baseUrl + '/user_media/' + uid + '/profile_pictures/' + this.profilePhotos[this.profilePhotos.length - 1].id + '.jpg'
